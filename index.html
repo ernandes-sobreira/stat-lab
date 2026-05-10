@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>StatLab</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{--bg:#0d0d0d;--sur:#141414;--bor:#242424;--txt:#f0ede8;--mut:#555;--yel:#f5e642;--red:#ff4d6d;--cya:#00e5ff;--grn:#a8ff78;--blue:#7dd3fc;--pur:#c084fc;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--txt);max-width:480px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;}
+header{padding:12px 16px 0;border-bottom:1px solid var(--bor);}
+header h1{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--yel);letter-spacing:-0.02em;}
+header p{font-size:0.55rem;color:var(--mut);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
+.tabs{display:flex;border-bottom:2px solid var(--bor);overflow-x:auto;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:10px 10px;background:transparent;border:none;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.55rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;white-space:nowrap;}
+.tab.on{color:var(--yel);border-bottom-color:var(--yel);font-weight:600;}
+.panel{display:none;flex-direction:column;}
+.panel.on{display:flex;}
+.subtabs{display:flex;border-bottom:1px solid var(--bor);}
+.stab{flex:1;padding:9px 4px;background:transparent;border:none;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.52rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;transition:all 0.15s;}
+.stab.on{color:var(--yel);border-bottom-color:var(--yel);font-weight:600;}
+.subpanel{display:none;flex-direction:column;}
+.subpanel.on{display:flex;}
+.cw{background:var(--sur);border-bottom:2px solid var(--bor);touch-action:none;user-select:none;}
+canvas{display:block;width:100%;height:auto;}
+.sb{display:flex;border-bottom:1px solid var(--bor);}
+.st{flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--bor);}
+.st:last-child{border-right:none;}
+.st .l{display:block;font-size:0.46rem;color:var(--mut);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;}
+.st .v{font-size:0.78rem;font-weight:600;}
+.sec{padding:11px 14px;border-bottom:1px solid var(--bor);}
+.stit{font-size:0.52rem;color:var(--mut);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;}
+.pills{display:flex;gap:5px;flex-wrap:wrap;}
+.pill{padding:5px 11px;border-radius:40px;border:1.5px solid var(--bor);background:var(--sur);color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;cursor:pointer;transition:all 0.1s;white-space:nowrap;}
+.pill:hover{border-color:#444;color:var(--txt);}
+.ay{background:var(--yel)!important;color:#000!important;border-color:var(--yel)!important;font-weight:600!important;}
+.ab{background:var(--blue)!important;color:#000!important;border-color:var(--blue)!important;font-weight:600!important;}
+.ag{background:var(--grn)!important;color:#000!important;border-color:var(--grn)!important;font-weight:600!important;}
+.ar{background:var(--red)!important;color:#000!important;border-color:var(--red)!important;font-weight:600!important;}
+.ibs{display:flex;gap:6px;margin-top:8px;}
+.ib{flex:1;padding:7px 4px;border:1.5px solid var(--bor);background:var(--sur);color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;border-radius:7px;cursor:pointer;transition:all 0.1s;text-align:center;}
+.ib:hover{border-color:#555;color:var(--txt);}
+.srow{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.srow label{font-size:0.52rem;color:var(--mut);text-transform:uppercase;min-width:76px;}
+.srow input[type=range]{flex:1;accent-color:var(--yel);}
+.srow span{font-size:0.7rem;color:var(--txt);min-width:26px;text-align:right;}
+.binput{width:100%;padding:9px 12px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:8px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;outline:none;transition:border-color 0.15s;}
+.binput:focus{border-color:var(--blue);}
+.txta{width:100%;padding:9px 12px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:8px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;outline:none;resize:vertical;min-height:90px;line-height:1.7;}
+.warn{font-size:0.6rem;color:var(--red);margin-top:5px;display:none;}
+.chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:20px;}
+.chip{padding:3px 8px;border-radius:5px;font-size:0.62rem;border:1px solid #2a2a2a;background:#1a1a1a;color:var(--mut);}
+.chip-lbl{font-size:0.42rem;display:block;text-align:center;margin-top:1px;}
+.leg{display:flex;flex-direction:column;gap:5px;}
+.lr{display:flex;align-items:center;gap:7px;font-size:0.6rem;color:var(--mut);}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ll{width:16px;height:2px;flex-shrink:0;}
+.hint{font-size:0.54rem;color:var(--mut);margin-top:6px;}
+.steps{font-size:0.63rem;line-height:2;color:var(--mut);}
+.steps b{color:var(--txt);}
+.desc{font-size:0.63rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-top:8px;}
+.expblock{display:flex;flex-direction:column;gap:9px;font-size:0.62rem;line-height:1.6;}
+.expitem{border-radius:0;padding-left:10px;}
+</style>
+</head>
+<body>
+<header><h1>StatLab</h1><p>Laboratório Interativo de Estatística</p></header>
+
+<div class="tabs">
+  <button class="tab on" id="mt0" onclick="showMain(0)">Normal</button>
+  <button class="tab"    id="mt1" onclick="showMain(1)">Regressão</button>
+  <button class="tab"    id="mt2" onclick="showMain(2)">Boxplot</button>
+  <button class="tab"    id="mt3" onclick="showMain(3)">Histograma</button>
+  <button class="tab"    id="mt4" onclick="showMain(4)">Barras+DP</button>
+  <button class="tab"    id="mt5" onclick="showMain(5)">Valor-p</button>
+  <button class="tab"    id="mt6" onclick="showMain(6)">Tamanho n</button>
+</div>
+
+<!-- ═══ NORMAL ═══ -->
+<div id="m0" class="panel on">
+  <div class="subtabs">
+    <button class="stab on" id="nst0" onclick="showSub('n',0)">Curva interativa</button>
+    <button class="stab"    id="nst1" onclick="showSub('n',1)">Analisar meus dados</button>
+  </div>
+  <div id="ns0" class="subpanel on">
+    <div class="cw"><canvas id="cvN" width="480" height="260"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">μ</span><span class="v" style="color:var(--red)" id="nMuV">0.0</span></div>
+      <div class="st"><span class="l">σ</span><span class="v" style="color:var(--blue)" id="nSdV">1.0</span></div>
+      <div class="st"><span class="l">±1σ</span><span class="v" style="color:var(--grn)">68,3%</span></div>
+      <div class="st"><span class="l">±2σ</span><span class="v" style="color:var(--pur)">95,4%</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Controles</div>
+      <div class="srow"><label>Média μ</label><input type="range" id="nMu" min="-3" max="3" step="0.1" value="0" oninput="drawNormal()"><span id="nMuL">0.0</span></div>
+      <div class="srow"><label>Desvio σ</label><input type="range" id="nSd" min="0.3" max="3" step="0.1" value="1" oninput="drawNormal()"><span id="nSdL">1.0</span></div>
+      <p class="hint">Clique na curva para mover a média.</p>
+    </div>
+    <div class="sec">
+      <div class="stit">Tipos de distribuição</div>
+      <div class="pills">
+        <button class="pill ay" onclick="nShape('normal',this)">Normal</button>
+        <button class="pill"    onclick="nShape('skewR',this)">Assim. direita</button>
+        <button class="pill"    onclick="nShape('skewL',this)">Assim. esquerda</button>
+        <button class="pill"    onclick="nShape('bimodal',this)">Bimodal</button>
+        <button class="pill"    onclick="nShape('uniform',this)">Uniforme</button>
+      </div>
+      <div class="desc" id="nDesc">Curva simétrica em torno da média. Skewness≈0, curtose≈3. Exemplos: altura, peso.</div>
+    </div>
+    <div class="sec">
+      <div class="stit">Legenda</div>
+      <div class="leg">
+        <div class="lr"><div class="ll" style="background:var(--red)"></div>Curva</div>
+        <div class="lr"><div class="ld" style="background:var(--red);opacity:.3;width:16px;height:8px;border-radius:2px"></div>Área ±1σ</div>
+        <div class="lr"><div class="ll" style="background:var(--blue)"></div>Média μ</div>
+      </div>
+    </div>
+  </div>
+  <div id="ns1" class="subpanel">
+    <div class="cw"><canvas id="cvN2" width="480" height="260"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="ndN">—</span></div>
+      <div class="st"><span class="l">Média</span><span class="v" style="color:var(--red)" id="ndMean">—</span></div>
+      <div class="st"><span class="l">Desvio</span><span class="v" style="color:var(--blue)" id="ndSd">—</span></div>
+      <div class="st"><span class="l">Skewness</span><span class="v" style="color:var(--yel)" id="ndSkew">—</span></div>
+    </div>
+    <div class="sb">
+      <div class="st"><span class="l">Curtose</span><span class="v" style="color:var(--pur)" id="ndKurt">—</span></div>
+      <div class="st" style="flex:3"><span class="l">Diagnóstico</span><span class="v" style="font-size:0.58rem" id="ndDiag">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Digite seus dados (mín. 5)</div>
+      <input class="binput" id="ndInput" type="text" placeholder="Ex: 23 45 31 28 50 42 36" oninput="ndCalc()">
+      <div class="warn" id="ndWarn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="ndEx('55 62 58 61 59 63 57 60 64 56 61 58 62 59 60')">Normal</button>
+        <button class="pill" onclick="ndEx('1 2 2 3 3 3 4 5 6 8 10 14 20 35 50')">Assim. direita</button>
+        <button class="pill" onclick="ndEx('50 35 20 14 10 8 6 5 4 3 3 3 2 2 1')">Assim. esquerda</button>
+        <button class="pill" onclick="ndEx('10 11 12 10 11 30 31 32 30 31 11 12 30 31 10')">Bimodal</button>
+      </div>
+    </div>
+    <div class="sec" id="ndInterpSec" style="display:none">
+      <div class="stit">Interpretação</div>
+      <div id="ndInterp" style="font-size:0.63rem;line-height:1.8;color:var(--mut)"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">O que mede cada indicador</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Skewness</span><br><span style="color:var(--mut)">≈0 simétrica | &gt;0 cauda direita | &lt;0 cauda esquerda</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Curtose</span><br><span style="color:var(--mut)">≈3 normal | &gt;3 pico alto | &lt;3 achatada</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Regra 68–95–99,7%</span><br><span style="color:var(--mut)">±1σ=68,3% | ±2σ=95,4% | ±3σ=99,7%</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ REGRESSÃO ═══ -->
+<div id="m1" class="panel">
+  <div class="subtabs">
+    <button class="stab on" id="rst0" onclick="showSub('r',0)">Interativo</button>
+    <button class="stab"    id="rst1" onclick="showSub('r',1)">Meus dados (X,Y)</button>
+  </div>
+  <div id="rs0" class="subpanel on">
+    <div class="cw"><canvas id="cvR" width="480" height="300"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="rN">0</span></div>
+      <div class="st"><span class="l">R²</span><span class="v" style="color:var(--yel)" id="rR2">—</span></div>
+      <div class="st"><span class="l">inclin.</span><span class="v" id="rM">—</span></div>
+      <div class="st"><span class="l">interc.</span><span class="v" style="color:var(--blue)" id="rB">—</span></div>
+    </div>
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">p-valor</span><span class="v" style="font-size:0.72rem" id="rPval">—</span></div>
+      <div class="st" style="flex:2"><span class="l">Resultado</span><span class="v" style="font-size:0.58rem" id="rPinterp">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Tipo</div>
+      <div class="pills">
+        <button class="pill ay" id="tFree" onclick="rSetType('free',this)">Livre</button>
+        <button class="pill"    id="tPos"  onclick="rSetType('positive',this)">↗ Positiva</button>
+        <button class="pill"    id="tNeg"  onclick="rSetType('negative',this)">↘ Negativa</button>
+        <button class="pill"    id="tNeu"  onclick="rSetType('neutral',this)">→ Neutra</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Gerar com R² definido</div>
+      <div class="pills">
+        <button class="pill" data-r="1.0" onclick="rPreset(this)">R²=1,0</button>
+        <button class="pill" data-r="0.9" onclick="rPreset(this)">R²=0,9</button>
+        <button class="pill" data-r="0.7" onclick="rPreset(this)">R²=0,7</button>
+        <button class="pill" data-r="0.5" onclick="rPreset(this)">R²=0,5</button>
+        <button class="pill" data-r="0.2" onclick="rPreset(this)">R²=0,2</button>
+        <button class="pill" data-r="0.0" onclick="rPreset(this)">R²=0,0</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exibir</div>
+      <div class="pills">
+        <button class="pill ab" id="bInt" onclick="rTog('inter')">Intersecções</button>
+        <button class="pill"    id="bRes" onclick="rTog('resid')">Resíduos</button>
+        <button class="pill ar" id="bDot" onclick="rTog('dots')">Pontos</button>
+      </div>
+      <div class="ibs">
+        <button class="ib" onclick="rAddRnd()">+ Ponto</button>
+        <button class="ib" onclick="rClear()">Limpar</button>
+        <button class="ib" onclick="rExample()">Exemplo</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como se calcula</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Equação: ŷ = a·x + b</span><br><span style="color:var(--mut)">a=inclinação, b=intercepto (Y quando X=0)</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Mínimos Quadrados</span><br><span style="color:var(--mut)">a = Σ[(xᵢ−x̄)(yᵢ−ȳ)] / Σ[(xᵢ−x̄)²]<br>b = ȳ − a·x̄</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">R² = 1 − SS_res/SS_tot</span><br><span style="color:var(--mut)">Quanto da variação de Y a reta explica.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">p-valor: testa se a≠0</span><br><span style="color:var(--mut)">p&lt;0,05 → relação significativa.<br>R² diz QUANTO é forte. p-valor diz se é REAL.</span></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Legenda</div>
+      <div class="leg">
+        <div class="lr"><div class="ld" style="background:var(--red)"></div>Pontos (arraste)</div>
+        <div class="lr"><div class="ll" style="background:var(--yel)"></div>Reta de regressão</div>
+        <div class="lr"><div class="ll" style="background:var(--blue);border-top:2px dashed var(--blue);height:0"></div>Último ponto→eixos</div>
+        <div class="lr"><div class="ld" style="background:var(--cya)"></div>Intersecções da reta</div>
+      </div>
+      <p class="hint">Toque para adicionar. Arraste para mover.</p>
+    </div>
+  </div>
+  <div id="rs1" class="subpanel">
+    <div class="cw"><canvas id="cvRD" width="480" height="300"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="rdN">—</span></div>
+      <div class="st"><span class="l">R²</span><span class="v" style="color:var(--yel)" id="rdR2">—</span></div>
+      <div class="st"><span class="l">inclin.</span><span class="v" id="rdM">—</span></div>
+      <div class="st"><span class="l">interc.</span><span class="v" style="color:var(--blue)" id="rdB">—</span></div>
+    </div>
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">p-valor</span><span class="v" style="font-size:0.72rem" id="rdPval">—</span></div>
+      <div class="st" style="flex:2"><span class="l">Resultado</span><span class="v" style="font-size:0.58rem" id="rdPinterp">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como inserir — X Y por linha</div>
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);">Cada linha = um par <b style="color:var(--yel)">X Y</b>.<br><span style="color:var(--yel)">1.2 3.4<br>2.5 5.1<br>3.0 6.8</span><br>Mín: 3 pares.</div>
+    </div>
+    <div class="sec">
+      <div class="stit">Cole seus dados</div>
+      <textarea id="rdInput" class="txta" oninput="rdCalc()" placeholder="1  2&#10;2  4&#10;3  5&#10;4  8&#10;5  9"></textarea>
+      <div class="warn" id="rdWarn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="rdEx('pos')">Positiva forte</button>
+        <button class="pill" onclick="rdEx('neg')">Negativa</button>
+        <button class="pill" onclick="rdEx('fraca')">Fraca (R²≈0,3)</button>
+        <button class="pill" onclick="rdEx('real')">Temp × Sorvete</button>
+      </div>
+      <div class="ibs"><button class="ib" onclick="rdClear()">Limpar</button></div>
+    </div>
+    <div class="sec" id="rdInterpSec" style="display:none">
+      <div class="stit">Interpretação</div>
+      <div id="rdInterp" style="font-size:0.63rem;line-height:1.8;color:var(--mut)"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Legenda</div>
+      <div class="leg">
+        <div class="lr"><div class="ld" style="background:var(--red)"></div>Seus dados (X, Y)</div>
+        <div class="lr"><div class="ll" style="background:var(--yel)"></div>Reta ajustada</div>
+        <div class="lr"><div class="ll" style="background:var(--grn);border-top:2px dashed var(--grn);height:0"></div>Resíduos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BOXPLOT ═══ -->
+<div id="m2" class="panel">
+  <div class="cw"><canvas id="cvB" width="480" height="260"></canvas></div>
+  <div class="sb">
+    <div class="st"><span class="l">Q1</span><span class="v" style="color:var(--blue)" id="bQ1">—</span></div>
+    <div class="st"><span class="l">Mediana</span><span class="v" style="color:var(--yel)" id="bMed">—</span></div>
+    <div class="st"><span class="l">Q3</span><span class="v" style="color:var(--grn)" id="bQ3">—</span></div>
+    <div class="st"><span class="l">IQR</span><span class="v" style="color:var(--pur)" id="bIQR">—</span></div>
+  </div>
+  <div class="sb">
+    <div class="st"><span class="l">Média</span><span class="v" style="color:var(--red)" id="bMean">—</span></div>
+    <div class="st"><span class="l">Moda</span><span class="v" style="color:var(--cya)" id="bMode">—</span></div>
+    <div class="st"><span class="l">DP</span><span class="v" style="color:var(--pur)" id="bSd">—</span></div>
+    <div class="st"><span class="l">n</span><span class="v" id="bN">—</span></div>
+  </div>
+  <div class="sec">
+    <div class="stit">Digite os números (mín. 5)</div>
+    <input class="binput" id="bInput" type="text" placeholder="Ex: 4 7 2 9 3 15 8" oninput="bCalc()">
+    <div class="warn" id="bWarn"></div>
+    <div class="chips" id="bChips"></div>
+  </div>
+  <div class="sec">
+    <div class="stit">Exemplos prontos</div>
+    <div class="pills">
+      <button class="pill" onclick="bEx('4,7,2,9,3,15,8')">7 números</button>
+      <button class="pill" onclick="bEx('10,12,11,13,14,10,12,11,45,13')">Com outlier</button>
+      <button class="pill" onclick="bEx('3,7,5,1,9,6,4,8')">N par</button>
+      <button class="pill" onclick="bEx('12,7,3,21,18,5,14,9,2,16,11,8,19,6,13,4,17,10,20,15')">20 dados</button>
+    </div>
+    <div class="ibs"><button class="ib" onclick="bClear()">Limpar</button></div>
+  </div>
+  <div class="sec" id="bStepSec" style="display:none">
+    <div class="stit">Passo a passo</div>
+    <div class="steps" id="bSteps"></div>
+  </div>
+  <div class="sec">
+    <div class="stit">Como calcular cada parte</div>
+    <div class="expblock">
+      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Mediana</span><br><span style="color:var(--mut)">Ordene. N ímpar→valor do meio. N par→média dos dois centrais.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Q1 (25%)</span><br><span style="color:var(--mut)">Mediana da metade inferior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Q3 (75%)</span><br><span style="color:var(--mut)">Mediana da metade superior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">IQR = Q3−Q1</span><br><span style="color:var(--mut)">Largura da caixa. Bigodes: Q1−1,5×IQR e Q3+1,5×IQR.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">Outliers</span><br><span style="color:var(--mut)">Valores além dos bigodes.</span></div>
+      <div style="background:#1a1a1a;border-radius:7px;padding:9px;border:1px solid var(--bor);font-size:0.6rem;color:var(--mut)"><span style="color:var(--yel);font-weight:600">⚠ Mínimo 5 dados</span> — com menos, Q1/mediana/Q3 colapsam.</div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="stit">Legenda</div>
+    <div class="leg">
+      <div class="lr"><div class="ll" style="background:var(--blue)"></div>Caixa Q1–Q3</div>
+      <div class="lr"><div class="ll" style="background:var(--yel)"></div>Mediana</div>
+      <div class="lr"><div class="ll" style="background:var(--red);border-top:2px dashed var(--red);height:0"></div>Média (x̄)</div>
+      <div class="lr"><div class="ld" style="background:var(--red)"></div>Outliers</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HISTOGRAMA ═══ -->
+<div id="m3" class="panel">
+  <div class="subtabs">
+    <button class="stab on" id="hst0" onclick="showSub('h',0)">Distribuições</button>
+    <button class="stab"    id="hst1" onclick="showSub('h',1)">Meus dados</button>
+  </div>
+  <div id="hs0" class="subpanel on">
+    <div class="cw"><canvas id="cvH" width="480" height="260"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="hN">0</span></div>
+      <div class="st"><span class="l">bins</span><span class="v" style="color:var(--yel)" id="hBinV">8</span></div>
+      <div class="st"><span class="l">média</span><span class="v" style="color:var(--blue)" id="hMean">—</span></div>
+      <div class="st"><span class="l">desvio</span><span class="v" style="color:var(--grn)" id="hSd">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Bins</div>
+      <div class="srow"><label>Nº de barras</label><input type="range" id="hBins" min="4" max="20" step="1" value="8" oninput="drawHist()"><span id="hBinL">8</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Distribuição</div>
+      <div class="pills">
+        <button class="pill" onclick="hGen('normal')">Normal</button>
+        <button class="pill" onclick="hGen('skewR')">Assim. direita</button>
+        <button class="pill" onclick="hGen('skewL')">Assim. esquerda</button>
+        <button class="pill" onclick="hGen('bimodal')">Bimodal</button>
+        <button class="pill" onclick="hGen('uniform')">Uniforme</button>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Legenda</div>
+      <div class="leg">
+        <div class="lr"><div class="ll" style="background:var(--blue)"></div>Frequência</div>
+        <div class="lr"><div class="ll" style="background:var(--yel)"></div>Média μ</div>
+        <div class="lr"><div class="ll" style="background:var(--red);opacity:.7"></div>±1σ</div>
+      </div>
+      <p class="hint">Arraste as barras para editar manualmente.</p>
+    </div>
+  </div>
+  <div id="hs1" class="subpanel">
+    <div class="cw"><canvas id="cvH2" width="480" height="260"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="hdN">—</span></div>
+      <div class="st"><span class="l">bins</span><span class="v" style="color:var(--yel)" id="hdBinV">8</span></div>
+      <div class="st"><span class="l">média</span><span class="v" style="color:var(--blue)" id="hdMean">—</span></div>
+      <div class="st"><span class="l">desvio</span><span class="v" style="color:var(--grn)" id="hdSd">—</span></div>
+    </div>
+    <div class="sb">
+      <div class="st"><span class="l">mín</span><span class="v" id="hdMin">—</span></div>
+      <div class="st"><span class="l">máx</span><span class="v" id="hdMax">—</span></div>
+      <div class="st"><span class="l">mediana</span><span class="v" style="color:var(--yel)" id="hdMed">—</span></div>
+      <div class="st"><span class="l">moda</span><span class="v" style="color:var(--cya)" id="hdMode">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Digite seus números (mín. 5)</div>
+      <input class="binput" id="hdInput" type="text" placeholder="Ex: 23 45 31 28 50 42 36" oninput="hdCalc()">
+      <div class="warn" id="hdWarn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Bins</div>
+      <div class="srow"><label>Nº de barras</label><input type="range" id="hdBins" min="4" max="20" step="1" value="8" oninput="hdCalc()"><span id="hdBinL">8</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="hdEx('55 62 58 61 59 63 57 60 64 56 61 58 62 59 60 57 61 63 58 60')">Normal</button>
+        <button class="pill" onclick="hdEx('1 2 2 3 3 3 4 5 6 8 10 14 20 35 50 60 80')">Assim. direita</button>
+        <button class="pill" onclick="hdEx('80 60 50 35 20 14 10 8 6 5 4 3 3 3 2 2 1')">Assim. esquerda</button>
+        <button class="pill" onclick="hdEx('10 11 12 10 11 10 30 31 32 30 31 30 11 12 30 31 10 32 31 11')">Bimodal</button>
+      </div>
+      <div class="ibs"><button class="ib" onclick="hdClear()">Limpar</button></div>
+    </div>
+    <div class="sec" id="hdInterpSec" style="display:none">
+      <div class="stit">Interpretação</div>
+      <div id="hdInterp" style="font-size:0.63rem;line-height:1.8;color:var(--mut)"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Legenda</div>
+      <div class="leg">
+        <div class="lr"><div class="ll" style="background:var(--blue)"></div>Frequência dos seus dados</div>
+        <div class="lr"><div class="ll" style="background:var(--red)"></div>Curva normal teórica</div>
+        <div class="lr"><div class="ll" style="background:var(--yel)"></div>Média (x̄)</div>
+        <div class="lr"><div class="ll" style="background:var(--red);opacity:.5;border-top:2px dashed var(--red);height:0"></div>±1σ</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ BARRAS+DP ═══ -->
+<div id="m4" class="panel">
+  <div class="cw"><canvas id="cvDP" width="480" height="300"></canvas></div>
+  <div class="sb">
+    <div class="st"><span class="l">grupos</span><span class="v" id="dpGrps">—</span></div>
+    <div class="st"><span class="l">n/grupo</span><span class="v" style="color:var(--blue)" id="dpN">—</span></div>
+    <div class="st"><span class="l">maior DP</span><span class="v" style="color:var(--red)" id="dpMaxSD">—</span></div>
+    <div class="st"><span class="l">menor DP</span><span class="v" style="color:var(--grn)" id="dpMinSD">—</span></div>
+  </div>
+  <div class="sec">
+    <div class="stit">Barra de erro</div>
+    <div class="pills">
+      <button class="pill ar" id="dpModeDP" onclick="dpSetMode('dp')">± Desv. Padrão</button>
+      <button class="pill"    id="dpModeEP" onclick="dpSetMode('ep')">± Erro Padrão</button>
+      <button class="pill"    id="dpModeIC" onclick="dpSetMode('ic')">IC 95%</button>
+    </div>
+    <div id="dpModeDesc" class="desc">
+      <span style="color:var(--red);font-weight:600">Desvio Padrão (DP)</span> — variabilidade dos dados individuais. Não depende do n.
+    </div>
+  </div>
+  <div class="sec">
+    <div class="stit">Como inserir — Nome valores por linha</div>
+    <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);">Cada linha = um grupo.<br><span style="color:var(--yel)">Controle 12 15 14 13 16<br>Tratamento 22 25 21 24 23</span><br>Mín: 2 grupos, 3 valores cada.</div>
+  </div>
+  <div class="sec">
+    <div class="stit">Digite os grupos</div>
+    <textarea id="dpInput" class="txta" oninput="dpCalc()" placeholder="Controle 12 15 14 13 16&#10;Tratamento 22 25 21 24 23&#10;Placebo 18 17 19 16 20"></textarea>
+    <div class="warn" id="dpWarn"></div>
+  </div>
+  <div class="sec">
+    <div class="stit">Exemplos prontos</div>
+    <div class="pills">
+      <button class="pill" onclick="dpEx('basico')">2 grupos</button>
+      <button class="pill" onclick="dpEx('tres')">3 grupos</button>
+      <button class="pill" onclick="dpEx('notas')">Notas turmas</button>
+      <button class="pill" onclick="dpEx('bio')">Experimento biológico</button>
+    </div>
+    <div class="ibs"><button class="ib" onclick="dpClear()">Limpar</button></div>
+  </div>
+  <div class="sec" id="dpStatSec" style="display:none">
+    <div class="stit">Estatísticas por grupo</div>
+    <div id="dpStatTable" style="font-size:0.62rem;color:var(--mut);overflow-x:auto;"></div>
+  </div>
+  <div class="sec">
+    <div class="stit">DP × EP × IC 95%</div>
+    <div class="expblock">
+      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">DP = √[Σ(xᵢ−x̄)²/(n−1)]</span><br><span style="color:var(--mut)">Variabilidade dos dados. Não muda com n.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">EP = DP/√n</span><br><span style="color:var(--mut)">Precisão da média. Diminui com n maior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">IC 95% = x̄ ± t*×EP</span><br><span style="color:var(--mut)">Onde a média real está com 95% de certeza. Mais usado em artigos.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Regra de ouro</span><br><span style="color:var(--mut)">Se IC 95% não se sobrepõem → diferença provável (p&lt;0,05).<br>Nunca compare grupos com DP — use EP ou IC.</span></div>
+    </div>
+  </div>
+  <div class="sec">
+    <div class="stit">Legenda</div>
+    <div class="leg">
+      <div class="lr"><div class="ll" style="background:var(--blue)"></div>Média do grupo</div>
+      <div class="lr"><div class="ll" style="background:var(--red)"></div>Barra de erro (DP, EP ou IC95%)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ VALOR-P ═══ -->
+<div id="m5" class="panel">
+  <div class="subtabs">
+    <button class="stab on" id="pst0" onclick="showSub('p',0)">O que é</button>
+    <button class="stab"    id="pst1" onclick="showSub('p',1)">Teste-t 1 amostra</button>
+    <button class="stab"    id="pst2" onclick="showSub('p',2)">Teste-t 2 amostras</button>
+    <button class="stab"    id="pst3" onclick="showSub('p',3)">Teste-t pareado</button>
+    <button class="stab"    id="pst4" onclick="showSub('p',4)">Qui-quadrado</button>
+  </div>
+
+  <!-- O que é o valor-p -->
+  <div id="ps0" class="subpanel on">
+    <div class="sec">
+      <div class="stit">O que é o valor-p</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)">
+          <span style="color:var(--yel);font-weight:600">Definição formal</span><br>
+          <span style="color:var(--mut)">O valor-p é a <b style="color:var(--txt)">probabilidade de observar um resultado tão extremo quanto o obtido</b>, assumindo que H₀ (hipótese nula) é verdadeira.<br><br>
+          <b style="color:var(--txt)">NÃO é</b> a probabilidade de H₀ ser verdadeira.<br>
+          <b style="color:var(--txt)">NÃO é</b> a probabilidade de ter cometido um erro.</span>
+        </div>
+        <div class="expitem" style="border-left:3px solid var(--blue)">
+          <span style="color:var(--blue);font-weight:600">H₀ e H₁</span><br>
+          <span style="color:var(--mut)"><b style="color:var(--txt)">H₀ (nula):</b> não há efeito, diferença ou relação.<br>
+          <b style="color:var(--txt)">H₁ (alternativa):</b> há efeito, diferença ou relação.<br>
+          O teste calcula: "se H₀ fosse verdadeira, qual a chance de obter este resultado?"</span>
+        </div>
+        <div class="expitem" style="border-left:3px solid var(--red)">
+          <span style="color:var(--red);font-weight:600">Como interpretar</span><br>
+          <span style="color:var(--mut)"><b style="color:var(--grn)">p &lt; 0,05</b> → resultado improvável sob H₀ → rejeita H₀ → resultado <b style="color:var(--grn)">estatisticamente significativo</b><br>
+          <b style="color:var(--red)">p ≥ 0,05</b> → resultado compatível com H₀ → não rejeita H₀<br><br>
+          O limiar 0,05 (α) é convencional — não sagrado.</span>
+        </div>
+        <div class="expitem" style="border-left:3px solid var(--pur)">
+          <span style="color:var(--pur);font-weight:600">Fórmula geral</span><br>
+          <span style="color:var(--mut)">O valor-p não tem uma fórmula única — depende do teste. O que é comum é:<br><br>
+          <b style="color:var(--txt)">1.</b> Calcular uma estatística de teste (t, F, χ²)<br>
+          <b style="color:var(--txt)">2.</b> Comparar essa estatística com sua distribuição teórica<br>
+          <b style="color:var(--txt)">3.</b> p = P(estatística ≥ valor observado | H₀ verdadeira)<br><br>
+          Quanto mais extrema a estatística, menor o p.</span>
+        </div>
+        <div class="expitem" style="border-left:3px solid var(--grn)">
+          <span style="color:var(--grn);font-weight:600">Erros comuns</span><br>
+          <span style="color:var(--mut)">❌ p&lt;0,05 não significa efeito grande — use tamanho de efeito (Cohen's d, η²)<br>
+          ❌ p&gt;0,05 não prova que H₀ é verdadeira — é ausência de evidência, não evidência de ausência<br>
+          ❌ p&lt;0,001 não é "mais significativo" — é só mais improvável sob H₀<br>
+          ❌ p depende do n — com n=10.000 qualquer diferença mínima será significativa</span>
+        </div>
+        <div style="background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);font-size:0.62rem;color:var(--mut)">
+          <span style="color:var(--yel);font-weight:600">Erros tipo I e II</span><br>
+          <b style="color:var(--red)">Erro Tipo I (α):</b> rejeitar H₀ quando ela é verdadeira (falso positivo). Controlado por α=0,05.<br>
+          <b style="color:var(--blue)">Erro Tipo II (β):</b> não rejeitar H₀ quando ela é falsa (falso negativo). Reduzido com n maior.<br>
+          <b style="color:var(--grn)">Poder = 1−β:</b> probabilidade de detectar um efeito real. Típico: 0,80.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teste-t 1 amostra -->
+  <div id="ps1" class="subpanel">
+    <div class="cw"><canvas id="cvP1" width="480" height="220"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n</span><span class="v" id="p1n">—</span></div>
+      <div class="st"><span class="l">média</span><span class="v" style="color:var(--blue)" id="p1mean">—</span></div>
+      <div class="st"><span class="l">t</span><span class="v" style="color:var(--yel)" id="p1t">—</span></div>
+      <div class="st"><span class="l">p-valor</span><span class="v" style="color:var(--red)" id="p1p">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Digite seus dados</div>
+      <input class="binput" id="p1data" type="text" placeholder="Ex: 12 15 14 13 16 12 15" oninput="p1Calc()">
+      <div class="srow" style="margin-top:8px"><label>Valor de ref. (μ₀)</label><input class="binput" id="p1mu" type="number" value="10" style="flex:1;padding:6px 10px;font-size:0.7rem" oninput="p1Calc()"></div>
+      <div class="warn" id="p1warn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="p1Ex('12 15 14 13 16 12 15','10')">Significativo</button>
+        <button class="pill" onclick="p1Ex('10 11 10 9 11 10 10','10')">Não significativo</button>
+      </div>
+    </div>
+    <div class="sec" id="p1stepSec" style="display:none">
+      <div class="stit">Passo a passo</div>
+      <div class="steps" id="p1steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como funciona</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ = μ₀</span><br><span style="color:var(--mut)">Testa se a média da amostra é diferente de um valor de referência.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">t = (x̄ − μ₀) / (DP / √n)</b><br>Razão entre a diferença observada e o erro padrão.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Graus de liberdade</span><br><span style="color:var(--mut)">gl = n − 1. O p-valor vem da distribuição t com gl graus de liberdade.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teste-t 2 amostras -->
+  <div id="ps2" class="subpanel">
+    <div class="cw"><canvas id="cvP2" width="480" height="220"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">t</span><span class="v" style="color:var(--yel)" id="p2t">—</span></div>
+      <div class="st"><span class="l">gl</span><span class="v" id="p2gl">—</span></div>
+      <div class="st"><span class="l">p-valor</span><span class="v" style="color:var(--red)" id="p2p">—</span></div>
+      <div class="st"><span class="l">Cohen's d</span><span class="v" style="color:var(--grn)" id="p2d">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Grupo 1</div>
+      <input class="binput" id="p2g1" type="text" placeholder="Ex: 12 15 14 13 16" oninput="p2Calc()">
+    </div>
+    <div class="sec">
+      <div class="stit">Grupo 2</div>
+      <input class="binput" id="p2g2" type="text" placeholder="Ex: 22 25 21 24 23" oninput="p2Calc()">
+      <div class="warn" id="p2warn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="p2Ex('12 15 14 13 16 12 15','22 25 21 24 23 26 22')">Diferença clara</button>
+        <button class="pill" onclick="p2Ex('10 12 11 13 10','11 13 10 12 11')">Sem diferença</button>
+        <button class="pill" onclick="p2Ex('55 62 58 61 59 63 57','60 65 61 63 62 64 60')">Diferença pequena</button>
+      </div>
+    </div>
+    <div class="sec" id="p2stepSec" style="display:none">
+      <div class="stit">Passo a passo</div>
+      <div class="steps" id="p2steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como funciona</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ₁ = μ₂</span><br><span style="color:var(--mut)">Testa se as médias de dois grupos independentes são iguais.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t (Welch)</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">t = (x̄₁ − x̄₂) / √(s₁²/n₁ + s₂²/n₂)</b><br>Diferença entre grupos / variabilidade dentro dos grupos.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d — tamanho do efeito</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">d = |x̄₁ − x̄₂| / DP_pooled</b><br>d≈0,2 pequeno | d≈0,5 médio | d≈0,8 grande</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Teste-t pareado -->
+  <div id="ps3" class="subpanel">
+    <div class="cw"><canvas id="cvP3" width="480" height="220"></canvas></div>
+    <div class="sb">
+      <div class="st"><span class="l">n pares</span><span class="v" id="p3n">—</span></div>
+      <div class="st"><span class="l">diff. média</span><span class="v" style="color:var(--blue)" id="p3d">—</span></div>
+      <div class="st"><span class="l">t</span><span class="v" style="color:var(--yel)" id="p3t">—</span></div>
+      <div class="st"><span class="l">p-valor</span><span class="v" style="color:var(--red)" id="p3p">—</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como inserir — Antes e Depois por linha</div>
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);">Cada linha = um indivíduo: <b style="color:var(--yel)">valor_antes valor_depois</b><br><span style="color:var(--yel)">12 18<br>15 20<br>10 16</span></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Cole seus pares (antes depois)</div>
+      <textarea id="p3data" class="txta" oninput="p3Calc()" placeholder="12 18&#10;15 20&#10;10 16&#10;14 19&#10;13 17"></textarea>
+      <div class="warn" id="p3warn"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Exemplos prontos</div>
+      <div class="pills">
+        <button class="pill" onclick="p3Ex('12 18\n15 20\n10 16\n14 19\n13 17\n11 15\n16 22')">Tratamento eficaz</button>
+        <button class="pill" onclick="p3Ex('12 13\n15 14\n10 11\n14 13\n13 14\n11 12\n16 15')">Sem efeito</button>
+      </div>
+    </div>
+    <div class="sec" id="p3stepSec" style="display:none">
+      <div class="stit">Passo a passo</div>
+      <div class="steps" id="p3steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como funciona</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ_diff = 0</span><br><span style="color:var(--mut)">Testa se a diferença (depois−antes) é zero em média. Cada indivíduo é seu próprio controle.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">dᵢ = depois − antes</b><br><b style="color:var(--txt)">t = d̄ / (DP_d / √n)</b><br>Igual ao teste-t de 1 amostra aplicado às diferenças.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Vantagem</span><br><span style="color:var(--mut)">Mais poderoso que o teste de 2 amostras quando os dados são naturalmente pareados (mesmo indivíduo antes/depois, irmãos, amostras do mesmo local).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Qui-quadrado -->
+  <div id="ps4" class="subpanel">
+    <div class="subtabs" style="border-top:1px solid var(--bor)">
+      <button class="stab on" id="qst0" onclick="showSub('q',0)">2×2 (simples)</button>
+      <button class="stab"    id="qst1" onclick="showSub('q',1)">Tabela r×c</button>
+    </div>
+    <div id="qs0" class="subpanel on">
+      <div class="cw"><canvas id="cvQ1" width="480" height="200"></canvas></div>
+      <div class="sb">
+        <div class="st"><span class="l">χ²</span><span class="v" style="color:var(--yel)" id="q1chi">—</span></div>
+        <div class="st"><span class="l">gl</span><span class="v" id="q1gl">—</span></div>
+        <div class="st"><span class="l">p-valor</span><span class="v" style="color:var(--red)" id="q1p">—</span></div>
+        <div class="st"><span class="l">V de Cramér</span><span class="v" style="color:var(--grn)" id="q1v">—</span></div>
+      </div>
+      <div class="sec">
+        <div class="stit">Tabela 2×2 — valores observados</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:0.65rem;">
+          <div style="color:var(--mut);padding:4px"></div>
+          <div style="color:var(--blue);padding:4px;text-align:center">Grupo A</div>
+          <div style="color:var(--grn);padding:4px;text-align:center">Grupo B</div>
+          <div style="color:var(--pur);padding:4px">Desfecho +</div>
+          <input id="q1a" type="number" value="" placeholder="a" oninput="q1Calc()" style="padding:6px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:6px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-align:center;outline:none;">
+          <input id="q1b" type="number" value="" placeholder="b" oninput="q1Calc()" style="padding:6px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:6px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-align:center;outline:none;">
+          <div style="color:var(--red);padding:4px">Desfecho −</div>
+          <input id="q1c" type="number" value="" placeholder="c" oninput="q1Calc()" style="padding:6px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:6px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-align:center;outline:none;">
+          <input id="q1d" type="number" value="" placeholder="d" oninput="q1Calc()" style="padding:6px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:6px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;text-align:center;outline:none;">
+        </div>
+        <div class="warn" id="q1warn"></div>
+      </div>
+      <div class="sec">
+        <div class="stit">Exemplos prontos</div>
+        <div class="pills">
+          <button class="pill" onclick="q1Ex(45,15,20,40)">Associação forte</button>
+          <button class="pill" onclick="q1Ex(30,30,30,30)">Sem associação</button>
+          <button class="pill" onclick="q1Ex(18,12,22,8)">Fraca</button>
+        </div>
+      </div>
+      <div class="sec" id="q1stepSec" style="display:none">
+        <div class="stit">Passo a passo</div>
+        <div class="steps" id="q1steps"></div>
+      </div>
+    </div>
+    <div id="qs1" class="subpanel">
+      <div class="sb">
+        <div class="st"><span class="l">χ²</span><span class="v" style="color:var(--yel)" id="q2chi">—</span></div>
+        <div class="st"><span class="l">gl</span><span class="v" id="q2gl">—</span></div>
+        <div class="st"><span class="l">p-valor</span><span class="v" style="color:var(--red)" id="q2p">—</span></div>
+        <div class="st"><span class="l">V de Cramér</span><span class="v" style="color:var(--grn)" id="q2v">—</span></div>
+      </div>
+      <div class="sec">
+        <div class="stit">Como inserir — uma linha por categoria</div>
+        <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);">Cada linha = uma categoria. Valores de cada grupo separados por espaço.<br><span style="color:var(--yel)">Espécie_A 30 20 15<br>Espécie_B 10 25 30<br>Espécie_C 20 15 25</span></div>
+      </div>
+      <div class="sec">
+        <div class="stit">Cole sua tabela</div>
+        <textarea id="q2data" class="txta" oninput="q2Calc()" placeholder="Categoria_1 30 20 15&#10;Categoria_2 10 25 30&#10;Categoria_3 20 15 25"></textarea>
+        <div class="warn" id="q2warn"></div>
+      </div>
+      <div class="sec">
+        <div class="stit">Exemplos prontos</div>
+        <div class="pills">
+          <button class="pill" onclick="q2Ex('Espécie_A 30 20 15\nEspécie_B 10 25 30\nEspécie_C 20 15 25')">3×3 ecológico</button>
+          <button class="pill" onclick="q2Ex('Norte 45 30 25\nSul 20 40 40\nLeste 35 35 30')">3 regiões × 3 classes</button>
+        </div>
+      </div>
+      <div class="sec" id="q2stepSec" style="display:none">
+        <div class="stit">Passo a passo</div>
+        <div class="steps" id="q2steps"></div>
+      </div>
+    </div>
+    <div class="sec">
+      <div class="stit">Como funciona o qui-quadrado</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: sem associação entre variáveis</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">χ² = Σ (O − E)² / E</span><br><span style="color:var(--mut)">O = frequência observada | E = frequência esperada = (total linha × total coluna) / total geral</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">gl = (linhas−1) × (colunas−1)</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">V de Cramér — tamanho do efeito</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">V = √(χ²/(n × min(r−1,c−1)))</b><br>V≈0,1 fraco | V≈0,3 moderado | V≈0,5 forte</span></div>
+        <div style="background:#1a1a1a;border-radius:7px;padding:9px;border:1px solid var(--bor);font-size:0.6rem;color:var(--mut)"><span style="color:var(--yel);font-weight:600">⚠ Premissas</span> — frequência esperada ≥ 5 em pelo menos 80% das células. Se não, use o teste exato de Fisher.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ TAMANHO N ═══ -->
+<div id="m6" class="panel">
+  <div class="subtabs">
+    <button class="stab on" id="nst0b" onclick="showSub('ns',0)">Para média</button>
+    <button class="stab"    id="nst1b" onclick="showSub('ns',1)">2 grupos</button>
+    <button class="stab"    id="nst2b" onclick="showSub('ns',2)">Proporção</button>
+    <button class="stab"    id="nst3b" onclick="showSub('ns',3)">Correlação</button>
+  </div>
+
+  <!-- Para média -->
+  <!-- Para média -->
+  <div id="nss0" class="subpanel on">
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">n mínimo</span><span class="v" style="color:var(--yel);font-size:1.1rem" id="nm1n">—</span></div>
+      <div class="st"><span class="l">α</span><span class="v" id="nm1a">—</span></div>
+      <div class="st"><span class="l">Confiança</span><span class="v" style="color:var(--grn)" id="nm1pow">—</span></div>
+    </div>
+    <div class="sec">
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-bottom:10px">
+        <b style="color:var(--yel)">Situação:</b> você quer estimar a média de uma variável (ex: concentração de nitrogênio em lagos). Quanto maior a amostra, mais precisa é sua estimativa.<br>
+        <b style="color:var(--yel)">Pergunta:</b> quantas unidades preciso para estimar a média com ±E de precisão?
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Desvio Padrão esperado (σ)</div>
+        <input type="number" id="nm1sd" value="10" min="0.1" step="0.1" oninput="nm1Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--blue);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Quão variáveis são seus dados? Obtenha da literatura ou estudo piloto. Regra: σ ≈ amplitude/4.<br><b style="color:var(--red)">Maior σ → mais amostras.</b></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Margem de erro desejada (E)</div>
+        <input type="number" id="nm1e" value="3" min="0.01" step="0.1" oninput="nm1Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--red);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Qual precisão você aceita? E=3 significa que sua estimativa ficará dentro de ±3 unidades da média real.<br><b style="color:var(--red)">Menor E → muito mais amostras.</b></div>
+      </div>
+      <div>
+        <div style="font-size:0.58rem;color:var(--grn);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Nível de confiança (1−α)</div>
+        <select id="nm1conf" oninput="nm1Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--grn);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="1.645">90% — menos rigoroso, n menor</option>
+          <option value="1.96" selected>95% — padrão científico</option>
+          <option value="2.576">99% — muito rigoroso, n maior</option>
+        </select>
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Em 95% das amostras possíveis, o IC conterá a média real da população.<br><b style="color:var(--red)">Maior confiança → mais amostras.</b></div>
+      </div>
+    </div>
+    <div class="sec" id="nm1res" style="display:none">
+      <div class="stit">Resultado e interpretação</div>
+      <div class="steps" id="nm1steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Fórmula: n = (z × σ / E)²</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--mut)">z=1,96 para 95% | Arredonde sempre para cima.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Como estimar σ sem dados?</span><br><span style="color:var(--mut)">Use a literatura, estudo piloto, ou σ ≈ amplitude_esperada/4.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2 grupos -->
+  <div id="nss1" class="subpanel">
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">n por grupo</span><span class="v" style="color:var(--yel);font-size:1.1rem" id="nm2n">—</span></div>
+      <div class="st"><span class="l">Cohen's d</span><span class="v" style="color:var(--grn)" id="nm2d">—</span></div>
+      <div class="st"><span class="l">Poder</span><span class="v" style="color:var(--pur)" id="nm2pow">—</span></div>
+    </div>
+    <div class="sec">
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-bottom:10px">
+        <b style="color:var(--yel)">Situação:</b> você quer comparar dois grupos (ex: controle vs tratamento, antes vs depois em grupos independentes).<br>
+        <b style="color:var(--yel)">Pergunta:</b> quantos indivíduos por grupo para detectar uma diferença de δ unidades com poder de 90%?
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--yel);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Diferença mínima relevante (δ)</div>
+        <input type="number" id="nm2delta" value="5" step="0.1" oninput="nm2Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--yel);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Qual a menor diferença entre grupos que seria biologicamente importante? Ex: δ=5g de biomassa significa que diferenças menores não interessam.<br><b style="color:var(--red)">Menor δ → muito mais amostras.</b></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Desvio Padrão esperado (σ)</div>
+        <input type="number" id="nm2sd" value="8" min="0.1" step="0.1" oninput="nm2Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--blue);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Variabilidade esperada dentro de cada grupo (use literatura ou estudo piloto).<br><b style="color:var(--red)">Dados mais variáveis → mais amostras.</b></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--pur);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Poder estatístico (1−β)</div>
+        <select id="nm2pow_sel" oninput="nm2Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--pur);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="0.842">80% — mínimo aceitável</option>
+          <option value="1.036">85%</option>
+          <option value="1.282" selected>90% — recomendado para dissertações</option>
+        </select>
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Probabilidade de detectar o efeito SE ele existir. Poder baixo = risco alto de falso negativo.<br><b style="color:var(--red)">Maior poder → mais amostras.</b></div>
+      </div>
+      <div>
+        <div style="font-size:0.58rem;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Nível de significância (α)</div>
+        <select id="nm2alpha" oninput="nm2Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--red);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="1.645">α = 0,10 — menos rigoroso</option>
+          <option value="1.96" selected>α = 0,05 — padrão (p&lt;0,05)</option>
+          <option value="2.576">α = 0,01 — muito rigoroso</option>
+        </select>
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Risco de detectar diferença quando não há (falso positivo = erro tipo I).</div>
+      </div>
+    </div>
+    <div class="sec" id="nm2res" style="display:none">
+      <div class="stit">Resultado e interpretação</div>
+      <div class="steps" id="nm2steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Fórmula: n = 2σ²(z_α+z_β)²/δ²</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--mut)">n é por grupo. Total do estudo = 2n.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d = δ/σ</span><br><span style="color:var(--mut)">Tamanho do efeito: &lt;0,2 trivial | 0,2–0,5 pequeno | 0,5–0,8 médio | &gt;0,8 grande</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Proporção -->
+  <div id="nss2" class="subpanel">
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">n mínimo</span><span class="v" style="color:var(--yel);font-size:1.1rem" id="nm3n">—</span></div>
+      <div class="st"><span class="l">Erro padrão</span><span class="v" style="color:var(--blue)" id="nm3ep">—</span></div>
+    </div>
+    <div class="sec">
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-bottom:10px">
+        <b style="color:var(--yel)">Situação:</b> você quer estimar a proporção de algo (ex: % de fragmentos com espécie invasora, prevalência de uma doença, % de estudantes com determinada característica).<br>
+        <b style="color:var(--yel)">Pergunta:</b> quantas unidades amostrar para estimar a proporção com ±E de precisão?
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Proporção esperada (p)</div>
+        <input type="number" id="nm3p" value="0.5" min="0.01" max="0.99" step="0.01" oninput="nm3Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--blue);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Se a literatura indica ~30% de ocorrência, use p=0,30. Se não souber, use p=0,50 — é conservador e garante n suficiente para qualquer proporção.<br><b style="color:var(--red)">p próximo de 0,5 → mais amostras.</b></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Margem de erro (E)</div>
+        <input type="number" id="nm3e" value="0.05" min="0.01" max="0.3" step="0.01" oninput="nm3Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--red);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">E=0,05 significa ±5 pontos percentuais. Se a proporção real é 30%, você estimará entre 25% e 35%.<br><b style="color:var(--red)">Menor E → muito mais amostras.</b></div>
+      </div>
+      <div>
+        <div style="font-size:0.58rem;color:var(--grn);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Nível de confiança</div>
+        <select id="nm3conf" oninput="nm3Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--grn);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="1.645">90%</option><option value="1.96" selected>95% — padrão</option><option value="2.576">99%</option>
+        </select>
+      </div>
+    </div>
+    <div class="sec" id="nm3res" style="display:none">
+      <div class="stit">Resultado e interpretação</div>
+      <div class="steps" id="nm3steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Fórmula: n = z² × p(1−p) / E²</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Por que p=0,5 é conservador?</span><br><span style="color:var(--mut)">p(1−p) é máximo em p=0,5. Qualquer outra proporção dá n menor ou igual.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Correlação -->
+  <div id="nss3" class="subpanel">
+    <div class="sb">
+      <div class="st" style="flex:2"><span class="l">n mínimo</span><span class="v" style="color:var(--yel);font-size:1.1rem" id="nm4n">—</span></div>
+      <div class="st"><span class="l">r esperado</span><span class="v" style="color:var(--blue)" id="nm4r">—</span></div>
+      <div class="st"><span class="l">Poder</span><span class="v" style="color:var(--grn)" id="nm4pow">—</span></div>
+    </div>
+    <div class="sec">
+      <div style="font-size:0.62rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-bottom:10px">
+        <b style="color:var(--yel)">Situação:</b> você hipotiza que duas variáveis são correlacionadas (ex: temperatura × abundância de macroinvertebrados, chuva × CO₂ em rios).<br>
+        <b style="color:var(--yel)">Atenção:</b> correlações fracas (r≈0,2) exigem amostras grandes. Correlações fortes (r≈0,7) precisam de menos pontos.
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--blue);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Correlação de Pearson esperada (r)</div>
+        <input type="number" id="nm4r_in" value="0.5" min="-0.99" max="0.99" step="0.05" oninput="nm4Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--blue);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">O r que você espera encontrar, baseado na literatura. Use valor absoluto para correlações negativas.<br>r=0,1 fraco | r=0,3 moderado | r=0,5 forte | r=0,7 muito forte<br><b style="color:var(--red)">Menor |r| → muito mais amostras.</b></div>
+      </div>
+      <div style="margin-bottom:12px">
+        <div style="font-size:0.58rem;color:var(--red);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Nível de significância (α)</div>
+        <select id="nm4alpha" oninput="nm4Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--red);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="1.645">α = 0,10</option><option value="1.96" selected>α = 0,05 — padrão</option><option value="2.576">α = 0,01</option>
+        </select>
+      </div>
+      <div>
+        <div style="font-size:0.58rem;color:var(--pur);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px">Poder estatístico (1−β)</div>
+        <select id="nm4pow_sel" oninput="nm4Calc()" style="width:100%;padding:8px 12px;background:#1a1a1a;border:1.5px solid var(--pur);border-radius:7px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.75rem;outline:none;">
+          <option value="0.842">80%</option><option value="1.036">85%</option><option value="1.282" selected>90% — recomendado</option>
+        </select>
+        <div style="font-size:0.6rem;color:var(--mut);margin-top:4px;line-height:1.6">Probabilidade de detectar a correlação se ela realmente existir.<br><b style="color:var(--red)">Maior poder → mais amostras.</b></div>
+      </div>
+    </div>
+    <div class="sec" id="nm4res" style="display:none">
+      <div class="stit">Resultado e interpretação</div>
+      <div class="steps" id="nm4steps"></div>
+    </div>
+    <div class="sec">
+      <div class="stit">Fórmula: n = ((z_α+z_β)/Z_r)² + 3</div>
+      <div class="expblock">
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Transformação de Fisher</span><br><span style="color:var(--mut)">Z_r = 0,5×ln((1+r)/(1−r)) — converte r para escala normal, estabilizando a variância.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Por que +3?</span><br><span style="color:var(--mut)">Correção de viés de Filon para amostras pequenas.</span></div>
+      </div>
+    </div>
+  </div></div>
+
+<script>
+// ═══ UTILS ═══════════════════════════════════════════════
+function RC(c){c.shadowBlur=0;c.shadowColor='transparent';c.globalAlpha=1;c.setLineDash([]);c.lineWidth=1;}
+function randn(){let u=0,v=0;while(!u)u=Math.random();while(!v)v=Math.random();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function pdf(x,m,s){return(1/(s*Math.sqrt(2*Math.PI)))*Math.exp(-0.5*((x-m)/s)**2);}
+
+// ═══ TABS ════════════════════════════════════════════════
+function showMain(idx){
+  for(var i=0;i<7;i++){
+    document.getElementById('m'+i).classList.toggle('on',i===idx);
+    document.getElementById('mt'+i).classList.toggle('on',i===idx);
+  }
+  if(idx===0)drawNormal();
+  if(idx===1){var s=document.getElementById('rs1');if(s&&s.classList.contains('on'))rdDraw();else rDraw();}
+  if(idx===2){if(bData.length>=5)bDraw();else bEmpty();}
+  if(idx===3){var s2=document.getElementById('hs1');if(s2&&s2.classList.contains('on'))hdDraw();else drawHist();}
+  if(idx===4)dpDraw();
+}
+
+function showSub(mod,idx){
+  var cfg={
+    n:{tabs:['nst0','nst1'],panels:['ns0','ns1'],cb:[drawNormal,ndDraw]},
+    r:{tabs:['rst0','rst1'],panels:['rs0','rs1'],cb:[rDraw,rdDraw]},
+    h:{tabs:['hst0','hst1'],panels:['hs0','hs1'],cb:[drawHist,hdDraw]},
+    p:{tabs:['pst0','pst1','pst2','pst3','pst4'],panels:['ps0','ps1','ps2','ps3','ps4'],cb:[function(){},p1Redraw,p2Redraw,p3Redraw,function(){}]},
+    q:{tabs:['qst0','qst1'],panels:['qs0','qs1'],cb:[q1Calc,q2Calc]},
+    ns:{tabs:['nst0b','nst1b','nst2b','nst3b'],panels:['nss0','nss1','nss2','nss3'],cb:[nm1Calc,nm2Calc,nm3Calc,nm4Calc]}
+  };
+  var c=cfg[mod];
+  c.tabs.forEach(function(id,i){document.getElementById(id).classList.toggle('on',i===idx);});
+  c.panels.forEach(function(id,i){document.getElementById(id).classList.toggle('on',i===idx);});
+  if(c.cb[idx])c.cb[idx]();
+}
+
+// ═══ NORMAL ══════════════════════════════════════════════
+var cvN=document.getElementById('cvN'),ctxN=cvN.getContext('2d');
+var cvN2=document.getElementById('cvN2'),ctxN2=cvN2.getContext('2d');
+var WN=480,HN=260,PN={l:44,r:16,t:18,b:34};
+var nCurShape='normal';
+
+var nShapeData={
+  normal:{color:'#ff4d6d',desc:'<b style="color:#ff4d6d">Normal</b> — simétrica, skewness≈0, curtose≈3. Exemplos: altura, peso, erros de medição.'},
+  skewR:{color:'#f5e642',desc:'<b style="color:#f5e642">Assimetria à Direita (positiva)</b> — cauda longa para a direita. Skewness&gt;0, Média&gt;Mediana. Ex: renda, preço de imóveis.'},
+  skewL:{color:'#7dd3fc',desc:'<b style="color:#7dd3fc">Assimetria à Esquerda (negativa)</b> — cauda longa para a esquerda. Skewness&lt;0, Média&lt;Mediana. Ex: notas em provas fáceis.'},
+  bimodal:{color:'#a8ff78',desc:'<b style="color:#a8ff78">Bimodal</b> — dois picos. Indica duas populações misturadas. Não é normal.'},
+  uniform:{color:'#c084fc',desc:'<b style="color:#c084fc">Uniforme</b> — todos os valores com mesma probabilidade. Curtose&lt;3. Ex: resultado de um dado.'}
+};
+
+function nShape(shape,btn){
+  nCurShape=shape;
+  document.querySelectorAll('#ns0 .pills .pill').forEach(function(p){p.classList.remove('ay');});
+  btn.classList.add('ay');
+  document.getElementById('nDesc').innerHTML=nShapeData[shape].desc;
+  drawShape(shape,nShapeData[shape].color);
+}
+
+function drawShape(shape,color){
+  RC(ctxN);ctxN.clearRect(0,0,WN,HN);ctxN.fillStyle='#0f0f0f';ctxN.fillRect(0,0,WN,HN);
+  var cxF=function(v){return PN.l+v*(WN-PN.l-PN.r);};
+  var pts=[];
+  for(var i=0;i<=300;i++){
+    var t=i/300,y=0;
+    if(shape==='normal')y=pdf(t*8-4,0,1);
+    else if(shape==='skewR'){var v=t*6;y=v>0?Math.exp(-v)*Math.pow(v,1.8)*1.5:0;}
+    else if(shape==='skewL'){var v2=(1-t)*6;y=v2>0?Math.exp(-v2)*Math.pow(v2,1.8)*1.5:0;}
+    else if(shape==='bimodal')y=pdf(t*8-4,-2,.8)+pdf(t*8-4,2,.8);
+    else if(shape==='uniform')y=(t>0.1&&t<0.9)?1:0;
+    pts.push({x:cxF(t),y:y});
+  }
+  var mx=Math.max.apply(null,pts.map(function(p){return p.y;}))||1;
+  var cyF=function(v){return HN-PN.b-(v/mx)*(HN-PN.t-PN.b);};
+  RC(ctxN);ctxN.beginPath();
+  pts.forEach(function(p,i){if(i===0)ctxN.moveTo(p.x,cyF(p.y));else ctxN.lineTo(p.x,cyF(p.y));});
+  ctxN.lineTo(pts[pts.length-1].x,cyF(0));ctxN.lineTo(pts[0].x,cyF(0));ctxN.closePath();
+  ctxN.fillStyle=color+'22';ctxN.fill();
+  RC(ctxN);ctxN.strokeStyle=color;ctxN.lineWidth=2.5;ctxN.shadowColor=color+'50';ctxN.shadowBlur=8;
+  ctxN.beginPath();pts.forEach(function(p,i){if(i===0)ctxN.moveTo(p.x,cyF(p.y));else ctxN.lineTo(p.x,cyF(p.y));});ctxN.stroke();RC(ctxN);
+  RC(ctxN);ctxN.strokeStyle='#333';ctxN.lineWidth=1.5;ctxN.beginPath();ctxN.moveTo(PN.l,HN-PN.b);ctxN.lineTo(WN-PN.r,HN-PN.b);ctxN.stroke();
+  if(shape==='skewR'){RC(ctxN);ctxN.fillStyle='#f5e642';ctxN.font='9px IBM Plex Mono';ctxN.textAlign='right';ctxN.fillText('→ cauda direita',WN-PN.r-4,HN-PN.b-8);}
+  if(shape==='skewL'){RC(ctxN);ctxN.fillStyle='#7dd3fc';ctxN.font='9px IBM Plex Mono';ctxN.textAlign='left';ctxN.fillText('← cauda esquerda',PN.l+4,HN-PN.b-8);}
+}
+
+function drawNormal(){
+  if(nCurShape!=='normal'){drawShape(nCurShape,nShapeData[nCurShape].color);return;}
+  var mu=parseFloat(document.getElementById('nMu').value);
+  var sd=parseFloat(document.getElementById('nSd').value);
+  document.getElementById('nMuL').textContent=mu.toFixed(1);
+  document.getElementById('nSdL').textContent=sd.toFixed(1);
+  document.getElementById('nMuV').textContent=mu.toFixed(1);
+  document.getElementById('nSdV').textContent=sd.toFixed(1);
+  var xMin=-7,xMax=7,yMax=0.85;
+  var cx=function(v){return PN.l+(v-xMin)/(xMax-xMin)*(WN-PN.l-PN.r);};
+  var cy=function(v){return HN-PN.b-(v/yMax)*(HN-PN.t-PN.b);};
+  RC(ctxN);ctxN.clearRect(0,0,WN,HN);ctxN.fillStyle='#0f0f0f';ctxN.fillRect(0,0,WN,HN);
+  RC(ctxN);ctxN.strokeStyle='#1a1a1a';ctxN.lineWidth=1;
+  for(var i=0;i<=5;i++){ctxN.beginPath();ctxN.moveTo(PN.l,cy(i*0.2));ctxN.lineTo(WN-PN.r,cy(i*0.2));ctxN.stroke();}
+  RC(ctxN);ctxN.strokeStyle='#333';ctxN.lineWidth=1.5;ctxN.beginPath();ctxN.moveTo(PN.l,cy(0));ctxN.lineTo(WN-PN.r,cy(0));ctxN.stroke();
+  RC(ctxN);ctxN.fillStyle='#3a3a3a';ctxN.font='9px IBM Plex Mono';ctxN.textAlign='center';
+  [-6,-4,-2,0,2,4,6].forEach(function(v){ctxN.fillText(v,cx(v),HN-PN.b+13);});
+  RC(ctxN);ctxN.beginPath();
+  for(var x=mu-sd;x<=mu+sd;x+=0.05){var y=pdf(x,mu,sd);if(x===mu-sd)ctxN.moveTo(cx(x),cy(y));else ctxN.lineTo(cx(x),cy(y));}
+  ctxN.lineTo(cx(mu+sd),cy(0));ctxN.lineTo(cx(mu-sd),cy(0));ctxN.closePath();
+  ctxN.fillStyle='rgba(255,77,109,0.18)';ctxN.fill();
+  RC(ctxN);ctxN.strokeStyle='#ff4d6d';ctxN.lineWidth=2.5;ctxN.shadowColor='#ff4d6d40';ctxN.shadowBlur=8;
+  ctxN.beginPath();
+  for(var x2=xMin;x2<=xMax;x2+=0.05){var y2=pdf(x2,mu,sd);if(x2===xMin)ctxN.moveTo(cx(x2),cy(y2));else ctxN.lineTo(cx(x2),cy(y2));}
+  ctxN.stroke();RC(ctxN);
+  RC(ctxN);ctxN.strokeStyle='#7dd3fc';ctxN.lineWidth=1.5;ctxN.setLineDash([5,3]);
+  ctxN.beginPath();ctxN.moveTo(cx(mu),cy(0));ctxN.lineTo(cx(mu),cy(pdf(mu,mu,sd)));ctxN.stroke();RC(ctxN);
+  ctxN.fillStyle='#7dd3fc';ctxN.font='bold 10px IBM Plex Mono';ctxN.textAlign='center';
+  ctxN.fillText('μ='+mu.toFixed(1),cx(mu),cy(0)+16);
+}
+cvN.addEventListener('click',function(e){
+  if(nCurShape!=='normal')return;
+  var r=cvN.getBoundingClientRect(),px=(e.clientX-r.left)*WN/r.width;
+  var v=Math.max(-3,Math.min(3,(px-PN.l)/(WN-PN.l-PN.r)*14-7));
+  document.getElementById('nMu').value=v.toFixed(1);drawNormal();
+});
+
+// Normal — analisar dados
+var ndData=[];
+function ndEx(s){document.getElementById('ndInput').value=s;ndCalc();}
+function ndCalc(){
+  var tokens=document.getElementById('ndInput').value.trim().split(/[\s,;]+/).filter(function(t){return t!=='';});
+  ndData=tokens.map(Number).filter(function(v){return !isNaN(v)&&isFinite(v);});
+  var w=document.getElementById('ndWarn');
+  if(ndData.length>0&&ndData.length<5){w.textContent='⚠ Mínimo 5. Você tem '+ndData.length+'.';w.style.display='block';ndEmpty();document.getElementById('ndInterpSec').style.display='none';['ndN','ndMean','ndSd','ndSkew','ndKurt','ndDiag'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  w.style.display='none';
+  if(ndData.length>=5){ndDraw2();ndInterpret();}else ndEmpty();
+}
+function ndEmpty(){RC(ctxN2);ctxN2.clearRect(0,0,WN,HN);ctxN2.fillStyle='#0f0f0f';ctxN2.fillRect(0,0,WN,HN);RC(ctxN2);ctxN2.fillStyle='#333';ctxN2.font='12px IBM Plex Mono';ctxN2.textAlign='center';ctxN2.fillText('← Digite dados acima',WN/2,HN/2);}
+function ndDraw(){if(!ndData.length){ndEmpty();return;}ndDraw2();}
+function ndDraw2(){
+  var d=ndData,n=d.length,mean=d.reduce(function(a,b){return a+b;},0)/n;
+  var sd=Math.sqrt(d.reduce(function(a,b){return a+(b-mean)*(b-mean);},0)/n)||1;
+  var xMin=mean-4*sd,xMax=mean+4*sd;
+  var cx=function(v){return PN.l+(v-xMin)/(xMax-xMin)*(WN-PN.l-PN.r);};
+  var bins=Math.max(5,Math.ceil(Math.sqrt(n)));
+  var bw=(xMax-xMin)/bins;
+  var counts=new Array(bins).fill(0);
+  d.forEach(function(v){var i=Math.max(0,Math.min(bins-1,Math.floor((v-xMin)/bw)));counts[i]++;});
+  var dens=counts.map(function(c){return c/(n*bw);});
+  var yMax=Math.max.apply(null,dens.concat([pdf(mean,mean,sd)]))*1.3||1;
+  var cy=function(v){return HN-PN.b-(v/yMax)*(HN-PN.t-PN.b);};
+  RC(ctxN2);ctxN2.clearRect(0,0,WN,HN);ctxN2.fillStyle='#0f0f0f';ctxN2.fillRect(0,0,WN,HN);
+  dens.forEach(function(d2,i){RC(ctxN2);var x=cx(xMin+i*bw),x2=cx(xMin+(i+1)*bw);ctxN2.fillStyle='rgba(125,211,252,0.3)';ctxN2.fillRect(x,cy(d2),x2-x,HN-PN.b-cy(d2));ctxN2.strokeStyle='#7dd3fc';ctxN2.lineWidth=1;ctxN2.strokeRect(x,cy(d2),x2-x,HN-PN.b-cy(d2));});
+  RC(ctxN2);ctxN2.strokeStyle='#ff4d6d';ctxN2.lineWidth=2.5;ctxN2.shadowColor='#ff4d6d50';ctxN2.shadowBlur=8;
+  ctxN2.beginPath();for(var i=0;i<=300;i++){var xv=xMin+i/300*(xMax-xMin);if(i===0)ctxN2.moveTo(cx(xv),cy(pdf(xv,mean,sd)));else ctxN2.lineTo(cx(xv),cy(pdf(xv,mean,sd)));}ctxN2.stroke();RC(ctxN2);
+  RC(ctxN2);ctxN2.strokeStyle='#f5e642';ctxN2.lineWidth=1.5;ctxN2.setLineDash([5,3]);ctxN2.beginPath();ctxN2.moveTo(cx(mean),PN.t);ctxN2.lineTo(cx(mean),HN-PN.b);ctxN2.stroke();RC(ctxN2);
+  ctxN2.fillStyle='#f5e642';ctxN2.font='bold 9px IBM Plex Mono';ctxN2.textAlign='center';ctxN2.fillText('x̄='+mean.toFixed(1),cx(mean),PN.t+10);
+  RC(ctxN2);ctxN2.strokeStyle='#333';ctxN2.lineWidth=1.5;ctxN2.beginPath();ctxN2.moveTo(PN.l,HN-PN.b);ctxN2.lineTo(WN-PN.r,HN-PN.b);ctxN2.stroke();
+}
+function ndInterpret(){
+  var d=ndData,n=d.length,mean=d.reduce(function(a,b){return a+b;},0)/n;
+  var sd=Math.sqrt(d.reduce(function(a,b){return a+(b-mean)*(b-mean);},0)/n)||1;
+  var sk=d.reduce(function(a,b){return a+Math.pow((b-mean)/sd,3);},0)/n;
+  var ku=d.reduce(function(a,b){return a+Math.pow((b-mean)/sd,4);},0)/n;
+  document.getElementById('ndN').textContent=n;
+  document.getElementById('ndMean').textContent=mean.toFixed(2);
+  document.getElementById('ndSd').textContent=sd.toFixed(2);
+  document.getElementById('ndSkew').textContent=sk.toFixed(2);
+  document.getElementById('ndKurt').textContent=ku.toFixed(2);
+  var tipo,cor;
+  if(Math.abs(sk)<0.5&&Math.abs(ku-3)<1){tipo='✓ Aproximadamente Normal';cor='#a8ff78';}
+  else if(sk>1){tipo='✗ Assimetria à Direita';cor='#f5e642';}
+  else if(sk<-1){tipo='✗ Assimetria à Esquerda';cor='#7dd3fc';}
+  else{tipo='⚠ Levemente Assimétrica';cor='#f5e642';}
+  var p1=(d.filter(function(v){return Math.abs(v-mean)<=sd;}).length/n*100).toFixed(0);
+  var p2=(d.filter(function(v){return Math.abs(v-mean)<=2*sd;}).length/n*100).toFixed(0);
+  document.getElementById('ndDiag').textContent=tipo;document.getElementById('ndDiag').style.color=cor;
+  document.getElementById('ndInterp').innerHTML='<div style="color:'+cor+';font-weight:600;margin-bottom:5px">'+tipo+'</div><div style="margin-bottom:4px"><b style="color:var(--yel)">Skewness='+sk.toFixed(2)+'</b> '+(sk>0.5?'→ cauda à direita':sk<-0.5?'→ cauda à esquerda':'→ simétrica')+'</div><div style="margin-bottom:4px"><b style="color:var(--pur)">Curtose='+ku.toFixed(2)+'</b> '+(ku>4?'→ leptocúrtica':ku<2?'→ platicúrtica':'→ próxima da normal')+'</div><div style="background:#1a1a1a;border-radius:6px;padding:8px;border:1px solid '+cor+'40">'+p1+'% em ±1σ (esp.68%) | '+p2+'% em ±2σ (esp.95%)</div>';
+  document.getElementById('ndInterpSec').style.display='block';
+}
+
+
+// ═══ REGRESSÃO INTERATIVA ════════════════════════════════
+var cvR=document.getElementById('cvR'),ctxR=cvR.getContext('2d');
+var WR=480,HR=300,PR={l:46,r:14,t:14,b:36};
+var rCX=function(v){return PR.l+v*(WR-PR.l-PR.r);};
+var rCY=function(v){return PR.t+(1-v)*(HR-PR.t-PR.b);};
+var rDX=function(p){return (p-PR.l)/(WR-PR.l-PR.r);};
+var rDY=function(p){return 1-(p-PR.t)/(HR-PR.t-PR.b);};
+var rPts=[],rLast=-1,rDrag=-1,rForced=null,rType='free';
+var rInter=true,rResid=false,rDots=true;
+
+function rLR(p){var n=p.length;if(n<2)return null;var sx=0,sy=0,sxy=0,sxx=0;p.forEach(function(q){sx+=q.x;sy+=q.y;sxy+=q.x*q.y;sxx+=q.x*q.x;});var den=n*sxx-sx*sx;if(Math.abs(den)<1e-10)return null;var m=(n*sxy-sx*sy)/den,b=(sy-m*sx)/n,ym=sy/n;var tot=0,res=0;p.forEach(function(q){tot+=(q.y-ym)*(q.y-ym);res+=(q.y-(m*q.x+b))*(q.y-(m*q.x+b));});return{m:m,b:b,r2:tot<1e-10?1:Math.max(0,1-res/tot)};}
+
+function rDraw(){
+  RC(ctxR);ctxR.clearRect(0,0,WR,HR);ctxR.fillStyle='#0f0f0f';ctxR.fillRect(0,0,WR,HR);
+  RC(ctxR);ctxR.strokeStyle='#1a1a1a';ctxR.lineWidth=1;
+  for(var i=0;i<=10;i++){ctxR.beginPath();ctxR.moveTo(rCX(i/10),PR.t);ctxR.lineTo(rCX(i/10),HR-PR.b);ctxR.stroke();ctxR.beginPath();ctxR.moveTo(PR.l,rCY(i/10));ctxR.lineTo(WR-PR.r,rCY(i/10));ctxR.stroke();}
+  RC(ctxR);ctxR.strokeStyle='#333';ctxR.lineWidth=1.5;ctxR.beginPath();ctxR.moveTo(PR.l,rCY(0));ctxR.lineTo(WR-PR.r,rCY(0));ctxR.stroke();ctxR.beginPath();ctxR.moveTo(rCX(0),PR.t);ctxR.lineTo(rCX(0),HR-PR.b);ctxR.stroke();
+  RC(ctxR);ctxR.fillStyle='#3a3a3a';ctxR.font='9px IBM Plex Mono';ctxR.textAlign='center';
+  [0,.2,.4,.6,.8,1].forEach(function(v){ctxR.fillText(v.toFixed(1),rCX(v),HR-PR.b+13);});
+  ctxR.textAlign='right';[0,.2,.4,.6,.8,1].forEach(function(v){ctxR.fillText(v.toFixed(1),PR.l-4,rCY(v)+3);});
+  var lr=rForced!==null?rForced:rLR(rPts);
+  if(lr){var ok=rType==='free'||(rType==='positive'&&lr.m>0.05)||(rType==='negative'&&lr.m<-0.05)||(rType==='neutral'&&Math.abs(lr.m)<=0.15);if(ok){if(rResid)rDrawResid(lr);if(rInter)rDrawInter(lr);rDrawArrows(lr);rDrawLine(lr);}rStat(lr);}else{rDrawArrows(null);rStat(null);}
+  rDrawHL();if(rDots)rDrawDots();
+}
+function rDrawLine(lr){RC(ctxR);ctxR.strokeStyle='#f5e642';ctxR.lineWidth=2.5;ctxR.shadowColor='#f5e64250';ctxR.shadowBlur=10;ctxR.beginPath();ctxR.moveTo(rCX(0),rCY(lr.m*0+lr.b));ctxR.lineTo(rCX(1),rCY(lr.m*1+lr.b));ctxR.stroke();RC(ctxR);}
+function rDrawResid(lr){RC(ctxR);rPts.forEach(function(p){var yh=lr.m*p.x+lr.b;ctxR.strokeStyle='rgba(168,255,120,0.5)';ctxR.lineWidth=1.5;ctxR.setLineDash([4,3]);ctxR.beginPath();ctxR.moveTo(rCX(p.x),rCY(p.y));ctxR.lineTo(rCX(p.x),rCY(yh));ctxR.stroke();});RC(ctxR);}
+function rDrawInter(lr){
+  var m=lr.m,b=lr.b;
+  rPts.forEach(function(p,i){if(i===rLast)return;RC(ctxR);ctxR.strokeStyle='rgba(125,211,252,0.25)';ctxR.lineWidth=1;ctxR.setLineDash([3,4]);ctxR.beginPath();ctxR.moveTo(rCX(p.x),rCY(p.y));ctxR.lineTo(rCX(p.x),rCY(0));ctxR.stroke();ctxR.beginPath();ctxR.moveTo(rCX(p.x),rCY(p.y));ctxR.lineTo(rCX(0),rCY(p.y));ctxR.stroke();RC(ctxR);ctxR.fillStyle='rgba(125,211,252,0.35)';ctxR.fillRect(PR.l-4,rCY(p.y)-1,8,2);ctxR.fillRect(rCX(p.x)-1,rCY(0)-4,2,8);});
+  if(b>=0&&b<=1){RC(ctxR);var ex=rCX(0),ey=rCY(b);ctxR.strokeStyle='rgba(0,229,255,0.5)';ctxR.lineWidth=1;ctxR.setLineDash([3,3]);ctxR.beginPath();ctxR.moveTo(ex,ey);ctxR.lineTo(PR.l,ey);ctxR.stroke();RC(ctxR);ctxR.beginPath();ctxR.arc(ex,ey,6,0,Math.PI*2);ctxR.fillStyle='#00e5ff';ctxR.fill();ctxR.strokeStyle='#0d0d0d';ctxR.lineWidth=2;ctxR.stroke();ctxR.fillStyle='#00e5ff';ctxR.font='bold 9px IBM Plex Mono';ctxR.textAlign='left';ctxR.fillText('b='+b.toFixed(2),ex+9,ey-5);}
+  if(Math.abs(m)>0.01){var xi=-b/m;if(xi>=0&&xi<=1){RC(ctxR);var ex2=rCX(xi),ey2=rCY(0);ctxR.strokeStyle='rgba(0,229,255,0.5)';ctxR.lineWidth=1;ctxR.setLineDash([3,3]);ctxR.beginPath();ctxR.moveTo(ex2,ey2);ctxR.lineTo(ex2,HR-PR.b);ctxR.stroke();RC(ctxR);ctxR.beginPath();ctxR.arc(ex2,ey2,6,0,Math.PI*2);ctxR.fillStyle='#00e5ff';ctxR.fill();ctxR.strokeStyle='#0d0d0d';ctxR.lineWidth=2;ctxR.stroke();ctxR.fillStyle='#00e5ff';ctxR.font='bold 9px IBM Plex Mono';ctxR.textAlign='center';ctxR.fillText('x₀='+xi.toFixed(2),ex2,ey2+18);}}
+  RC(ctxR);
+}
+function rDrawHL(){
+  if(rLast<0||rLast>=rPts.length)return;
+  var p=rPts[rLast],px=rCX(p.x),py=rCY(p.y),axX=rCY(0),axY=rCX(0);
+  RC(ctxR);ctxR.strokeStyle='#7dd3fc';ctxR.lineWidth=2.5;ctxR.setLineDash([8,5]);ctxR.beginPath();ctxR.moveTo(px,axX);ctxR.lineTo(px,py);ctxR.stroke();
+  RC(ctxR);ctxR.strokeStyle='#7dd3fc';ctxR.lineWidth=2.5;ctxR.setLineDash([8,5]);ctxR.beginPath();ctxR.moveTo(axY,py);ctxR.lineTo(px,py);ctxR.stroke();
+  RC(ctxR);ctxR.fillStyle='#f5e642';ctxR.fillRect(px-4,axX-10,8,20);ctxR.fillStyle='#000';ctxR.font='bold 10px IBM Plex Mono';ctxR.textAlign='center';ctxR.fillText('x='+p.x.toFixed(2),px,axX+22);
+  ctxR.fillStyle='#f5e642';ctxR.fillRect(axY-10,py-4,20,8);ctxR.fillStyle='#000';ctxR.textAlign='right';ctxR.fillText('y='+p.y.toFixed(2),axY-13,py+4);
+  RC(ctxR);ctxR.strokeStyle='rgba(245,230,66,0.6)';ctxR.lineWidth=3;ctxR.beginPath();ctxR.arc(px,py,16,0,Math.PI*2);ctxR.stroke();ctxR.strokeStyle='rgba(245,230,66,0.25)';ctxR.lineWidth=2;ctxR.beginPath();ctxR.arc(px,py,24,0,Math.PI*2);ctxR.stroke();RC(ctxR);
+}
+function rDrawDots(){RC(ctxR);rPts.forEach(function(p,i){var r=(i===rDrag||i===rLast)?10:7;ctxR.beginPath();ctxR.arc(rCX(p.x),rCY(p.y),r,0,Math.PI*2);ctxR.fillStyle=i===rDrag?'#ff4d6d':'rgba(255,77,109,0.85)';ctxR.fill();ctxR.strokeStyle='#0d0d0d';ctxR.lineWidth=2;ctxR.stroke();});RC(ctxR);}
+function rDrawArrows(lr){
+  RC(ctxR);var color,msg,yLabel,yDir;
+  if(!lr||Math.abs(lr.m)<0.05){color='#888';msg='Sem relação linear';yLabel='Y estável';yDir=0;}
+  else if(lr.m>0){color='#a8ff78';msg='Relação POSITIVA';yLabel='↑ Y aumenta';yDir=1;}
+  else{color='#ff4d6d';msg='Relação NEGATIVA';yLabel='↓ Y diminui';yDir=-1;}
+  var ax1=WR-PR.r,ayX=rCY(0),axX=rCX(0),ax1Y=HR-PR.b,aLen=28;
+  ctxR.strokeStyle=color;ctxR.fillStyle=color;ctxR.lineWidth=2;ctxR.shadowColor=color+'50';ctxR.shadowBlur=5;
+  ctxR.beginPath();ctxR.moveTo(ax1-aLen,ayX);ctxR.lineTo(ax1,ayX);ctxR.stroke();
+  rArrow(ax1,ayX,0,color);ctxR.font='bold 9px IBM Plex Mono';ctxR.textAlign='right';ctxR.fillText('X →',ax1-4,ayX-9);
+  if(yDir===1){ctxR.beginPath();ctxR.moveTo(axX,PR.t+aLen);ctxR.lineTo(axX,PR.t);ctxR.stroke();rArrow(axX,PR.t,-Math.PI/2,color);ctxR.textAlign='left';ctxR.fillText(yLabel,axX+6,PR.t+18);}
+  else if(yDir===-1){ctxR.beginPath();ctxR.moveTo(axX,ax1Y-aLen);ctxR.lineTo(axX,ax1Y);ctxR.stroke();rArrow(axX,ax1Y,Math.PI/2,color);ctxR.textAlign='left';ctxR.fillText(yLabel,axX+6,ax1Y-9);}
+  else{ctxR.textAlign='left';ctxR.fillText(yLabel,axX+6,PR.t+18);}
+  RC(ctxR);var bw=150,bh=18,bx=WR-PR.r-bw,by=PR.t+2;
+  ctxR.fillStyle=color+'22';rRR(ctxR,bx,by,bw,bh,5);ctxR.fill();ctxR.strokeStyle=color+'80';ctxR.lineWidth=1;rRR(ctxR,bx,by,bw,bh,5);ctxR.stroke();
+  ctxR.fillStyle=color;ctxR.font='bold 9px IBM Plex Mono';ctxR.textAlign='center';ctxR.fillText(msg,bx+bw/2,by+12);RC(ctxR);
+}
+function rArrow(x,y,a,c){ctxR.save();ctxR.translate(x,y);ctxR.rotate(a);ctxR.fillStyle=c;ctxR.shadowBlur=0;ctxR.shadowColor='transparent';ctxR.beginPath();ctxR.moveTo(0,0);ctxR.lineTo(-8,-4);ctxR.lineTo(-8,4);ctxR.closePath();ctxR.fill();ctxR.restore();}
+function rRR(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.lineTo(x+w-r,y);c.arcTo(x+w,y,x+w,y+r,r);c.lineTo(x+w,y+h-r);c.arcTo(x+w,y+h,x+w-r,y+h,r);c.lineTo(x+r,y+h);c.arcTo(x,y+h,x,y+h-r,r);c.lineTo(x,y+r);c.arcTo(x,y,x+r,y,r);c.closePath();}
+
+function rStat(lr){
+  document.getElementById('rN').textContent=rPts.length;
+  if(!lr){['rR2','rM','rB','rPval','rPinterp'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  document.getElementById('rR2').textContent=lr.r2.toFixed(3);
+  document.getElementById('rM').textContent=lr.m.toFixed(3);
+  document.getElementById('rB').textContent=lr.b.toFixed(3);
+  var n=rPts.length;
+  if(n<3){document.getElementById('rPval').textContent='n<3';document.getElementById('rPinterp').textContent='—';return;}
+  var xm=rPts.reduce(function(s,p){return s+p.x;},0)/n;
+  var sxx=rPts.reduce(function(s,p){return s+(p.x-xm)*(p.x-xm);},0);
+  var sse=rPts.reduce(function(s,p){return s+(p.y-(lr.m*p.x+lr.b))*(p.y-(lr.m*p.x+lr.b));},0);
+  var se_a=Math.sqrt((sse/(n-2))/sxx);
+  var t=Math.abs(lr.m/se_a);
+  var pval=2*(1-tCDF(t,n-2));
+  var pStr=pval<0.001?'< 0,001':pval.toFixed(3);
+  var pColor=pval<0.05?'var(--grn)':'var(--red)';
+  document.getElementById('rPval').textContent=pStr;document.getElementById('rPval').style.color=pColor;
+  document.getElementById('rPinterp').textContent=pval<0.05?'Significativo ✓':'Não significativo';document.getElementById('rPinterp').style.color=pColor;
+}
+
+// t-distribution CDF
+function tCDF(t,df){var x=df/(df+t*t);return 1-0.5*incompleteBeta(x,df/2,0.5);}
+function incompleteBeta(x,a,b){if(x<=0)return 0;if(x>=1)return 1;var lbeta=lgamma(a)+lgamma(b)-lgamma(a+b);var front=Math.exp(Math.log(x)*a+Math.log(1-x)*b-lbeta)/a;var f=1,C=1,D=1-((a+b)*x/(a+1));if(Math.abs(D)<1e-30)D=1e-30;D=1/D;f=D;for(var m=1;m<=200;m++){var num=m*(b-m)*x/((a+2*m-1)*(a+2*m));D=1+num*D;if(Math.abs(D)<1e-30)D=1e-30;C=1+num/C;if(Math.abs(C)<1e-30)C=1e-30;D=1/D;f*=D*C;num=-(a+m)*(a+b+m)*x/((a+2*m)*(a+2*m+1));D=1+num*D;if(Math.abs(D)<1e-30)D=1e-30;C=1+num/C;if(Math.abs(C)<1e-30)C=1e-30;D=1/D;var delta=D*C;f*=delta;if(Math.abs(delta-1)<1e-10)break;}return front*f;}
+function lgamma(x){if(x<0.5)return Math.log(Math.PI)-Math.log(Math.abs(Math.sin(Math.PI*x)))-lgamma(1-x);x-=1;var a=0.99999999999980993,c=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];for(var i=0;i<8;i++)a+=c[i]/(x+i+1);var t=x+7.5;return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t)-t+Math.log(a);}
+
+function rSetType(t,btn){rType=t;['tFree','tPos','tNeg','tNeu'].forEach(function(id){document.getElementById(id).classList.remove('ay');});btn.classList.add('ay');rDraw();}
+function rPreset(btn){
+  var t=parseFloat(btn.dataset.r);document.querySelectorAll('[data-r]').forEach(function(b){b.classList.remove('ab');});btn.classList.add('ab');
+  rPts=[];rLast=-1;rForced=null;var n=14;
+  if(t===0){for(var i=0;i<n;i++)rPts.push({x:0.06+Math.random()*0.88,y:0.08+Math.random()*0.84});var ym=rPts.reduce(function(s,p){return s+p.y;},0)/rPts.length;rForced={m:0,b:ym,r2:0};}
+  else if(t===1){for(var i=0;i<n;i++){var x=0.06+(i/(n-1))*0.88;var y=rType==='negative'?0.94-0.88*x:rType==='neutral'?0.5:0.06+0.88*x;rPts.push({x:x,y:Math.max(0.04,Math.min(0.96,y))});}}
+  else{var yR=0.75,varR=(yR*yR)/12,sdN=Math.sqrt(varR*(1/t-1));for(var i=0;i<n;i++){var x=0.06+(i/(n-1))*0.88;var yB=rType==='negative'?0.94-yR*x:rType==='neutral'?0.47:0.12+yR*x;rPts.push({x:x,y:Math.max(0.04,Math.min(0.96,yB+randn()*sdN))});}}
+  rDraw();
+}
+function rTog(w){if(w==='inter'){rInter=!rInter;document.getElementById('bInt').className='pill'+(rInter?' ab':'');}if(w==='resid'){rResid=!rResid;document.getElementById('bRes').className='pill'+(rResid?' ag':'');}if(w==='dots'){rDots=!rDots;document.getElementById('bDot').className='pill'+(rDots?' ar':'');}rDraw();}
+function rAddRnd(){rPts.push({x:0.1+Math.random()*0.8,y:0.1+Math.random()*0.8});rLast=rPts.length-1;rForced=null;document.querySelectorAll('[data-r]').forEach(function(b){b.classList.remove('ab');});rDraw();}
+function rClear(){rPts=[];rLast=-1;rForced=null;document.querySelectorAll('[data-r]').forEach(function(b){b.classList.remove('ab');});rDraw();}
+function rExample(){rPts=[];rLast=-1;rForced=null;var s=rType==='negative'?-1:rType==='neutral'?0:1;for(var i=0;i<10;i++){var x=0.08+(i/9)*0.84;var y=rType==='neutral'?0.42+randn()*0.07:0.12+0.72*(s>0?x:1-x)+randn()*0.05;rPts.push({x:x,y:Math.max(0.04,Math.min(0.96,y))});}document.querySelectorAll('[data-r]').forEach(function(b){b.classList.remove('ab');});rDraw();}
+function rGC(e){var r=cvR.getBoundingClientRect(),s=e.touches?e.touches[0]:e;return{px:(s.clientX-r.left)*WR/r.width,py:(s.clientY-r.top)*HR/r.height};}
+function rNear(px,py){var bi=-1,bd=Infinity;rPts.forEach(function(p,i){var d=Math.hypot(rCX(p.x)-px,rCY(p.y)-py);if(d<bd){bd=d;bi=i;}});return bd<22?bi:-1;}
+function rStart(e){var c=rGC(e),i=rNear(c.px,c.py);if(i>=0){rDrag=i;}else{var x=rDX(c.px),y=rDY(c.py);if(x>=0&&x<=1&&y>=0&&y<=1){rPts.push({x:x,y:y});rDrag=rPts.length-1;rLast=rPts.length-1;rForced=null;document.querySelectorAll('[data-r]').forEach(function(b){b.classList.remove('ab');});}}rDraw();}
+function rMove(e){if(rDrag===-1)return;var c=rGC(e);rPts[rDrag]={x:Math.max(0.01,Math.min(0.99,rDX(c.px))),y:Math.max(0.01,Math.min(0.99,rDY(c.py)))};rDraw();}
+cvR.addEventListener('mousedown',rStart);cvR.addEventListener('touchstart',rStart,{passive:true});
+cvR.addEventListener('mousemove',rMove);cvR.addEventListener('touchmove',rMove,{passive:true});
+cvR.addEventListener('mouseup',function(){rDrag=-1;});cvR.addEventListener('touchend',function(){rDrag=-1;});
+
+// ═══ REGRESSÃO — MEUS DADOS ══════════════════════════════
+var cvRD=document.getElementById('cvRD'),ctxRD=cvRD.getContext('2d');
+var WRD=480,HRD=300,PRD={l:50,r:16,t:20,b:40};
+var rdPairs=[];
+var rdExData={
+  pos:'1 2\n2 4\n3 5.5\n4 7\n5 9\n6 11\n7 12.5\n8 15',
+  neg:'1 20\n2 17\n3 15\n4 12\n5 10\n6 8\n7 5\n8 3',
+  fraca:'1 3\n2 8\n3 2\n4 9\n5 4\n6 11\n7 5\n8 7\n9 12\n10 6',
+  real:'20 50\n22 55\n25 60\n28 72\n30 85\n32 90\n35 102\n38 110\n40 120\n25 63\n27 70\n33 95'
+};
+function rdEx(k){document.getElementById('rdInput').value=rdExData[k];rdCalc();}
+function rdClear(){document.getElementById('rdInput').value='';rdPairs=[];document.getElementById('rdWarn').style.display='none';document.getElementById('rdInterpSec').style.display='none';['rdN','rdR2','rdM','rdB','rdPval','rdPinterp'].forEach(function(id){document.getElementById(id).textContent='—';});rdEmpty();}
+function rdEmpty(){RC(ctxRD);ctxRD.clearRect(0,0,WRD,HRD);ctxRD.fillStyle='#0f0f0f';ctxRD.fillRect(0,0,WRD,HRD);RC(ctxRD);ctxRD.fillStyle='#333';ctxRD.font='12px IBM Plex Mono';ctxRD.textAlign='center';ctxRD.fillText('← Cole seus dados X Y acima',WRD/2,HRD/2);}
+function rdDraw(){if(!rdPairs.length){rdEmpty();return;}rdCalcDraw();}
+function rdCalc(){
+  var raw=document.getElementById('rdInput').value.trim();
+  var warn=document.getElementById('rdWarn');
+  if(!raw){rdPairs=[];warn.style.display='none';rdEmpty();document.getElementById('rdInterpSec').style.display='none';['rdN','rdR2','rdM','rdB','rdPval','rdPinterp'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  var lines=raw.split('\n').filter(function(l){return l.trim()!=='';});
+  rdPairs=[];var erros=[];
+  lines.forEach(function(line,i){var parts=line.trim().split(/[\s,;\t]+/).map(Number);if(parts.length<2||parts.some(isNaN)){erros.push('linha '+(i+1));}else rdPairs.push({x:parts[0],y:parts[1]});});
+  if(erros.length){warn.textContent='⚠ Formato inválido: '+erros.join(', ');warn.style.display='block';}else warn.style.display='none';
+  if(rdPairs.length<3){warn.textContent=(warn.textContent?warn.textContent+' | ':'')+'⚠ Mínimo 3 pares. Você tem '+rdPairs.length+'.';warn.style.display='block';rdEmpty();document.getElementById('rdInterpSec').style.display='none';['rdN','rdR2','rdM','rdB','rdPval','rdPinterp'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  rdCalcDraw();
+}
+function rdCalcDraw(){
+  var p=rdPairs,n=p.length;
+  var sx=0,sy=0,sxy=0,sxx=0;
+  p.forEach(function(q){sx+=q.x;sy+=q.y;sxy+=q.x*q.y;sxx+=q.x*q.x;});
+  var den=n*sxx-sx*sx;if(Math.abs(den)<1e-10){rdEmpty();return;}
+  var m=(n*sxy-sx*sy)/den,b=(sy-m*sx)/n,ym=sy/n;
+  var tot=0,res=0;p.forEach(function(q){tot+=(q.y-ym)*(q.y-ym);res+=(q.y-(m*q.x+b))*(q.y-(m*q.x+b));});
+  var r2=tot<1e-10?1:Math.max(0,1-res/tot);
+  var pStr='—',pColor='var(--mut)',pInterp='—';
+  if(n>=3){var xm=sx/n,sxx2=sxx-n*xm*xm,se_a=Math.sqrt((res/(n-2))/sxx2),tVal=Math.abs(m/se_a),pval=2*(1-tCDF(tVal,n-2));pStr=pval<0.001?'< 0,001':pval.toFixed(3);pColor=pval<0.05?'var(--grn)':'var(--red)';pInterp=pval<0.05?'Significativo ✓':'Não significativo';}
+  document.getElementById('rdN').textContent=n;document.getElementById('rdR2').textContent=r2.toFixed(3);document.getElementById('rdM').textContent=m.toFixed(4);document.getElementById('rdB').textContent=b.toFixed(4);
+  document.getElementById('rdPval').textContent=pStr;document.getElementById('rdPval').style.color=pColor;document.getElementById('rdPinterp').textContent=pInterp;document.getElementById('rdPinterp').style.color=pColor;
+  var xs=p.map(function(q){return q.x;}),ys=p.map(function(q){return q.y;});
+  var xMin=Math.min.apply(null,xs),xMax=Math.max.apply(null,xs);
+  var yHats=p.map(function(q){return m*q.x+b;});
+  var yMin=Math.min.apply(null,ys.concat(yHats)),yMax=Math.max.apply(null,ys.concat(yHats));
+  var xPad=(xMax-xMin)*0.12||1,yPad=(yMax-yMin)*0.15||1;
+  var x0=xMin-xPad,x1=xMax+xPad,y0=yMin-yPad,y1=yMax+yPad;
+  var cx=function(v){return PRD.l+(v-x0)/(x1-x0)*(WRD-PRD.l-PRD.r);};
+  var cy=function(v){return HRD-PRD.b-(v-y0)/(y1-y0)*(HRD-PRD.t-PRD.b);};
+  RC(ctxRD);ctxRD.clearRect(0,0,WRD,HRD);ctxRD.fillStyle='#0f0f0f';ctxRD.fillRect(0,0,WRD,HRD);
+  RC(ctxRD);ctxRD.strokeStyle='#1a1a1a';ctxRD.lineWidth=1;
+  for(var i=0;i<=5;i++){ctxRD.beginPath();ctxRD.moveTo(PRD.l,PRD.t+i*(HRD-PRD.t-PRD.b)/5);ctxRD.lineTo(WRD-PRD.r,PRD.t+i*(HRD-PRD.t-PRD.b)/5);ctxRD.stroke();ctxRD.beginPath();ctxRD.moveTo(PRD.l+i*(WRD-PRD.l-PRD.r)/5,PRD.t);ctxRD.lineTo(PRD.l+i*(WRD-PRD.l-PRD.r)/5,HRD-PRD.b);ctxRD.stroke();}
+  RC(ctxRD);ctxRD.strokeStyle='#333';ctxRD.lineWidth=1.5;ctxRD.beginPath();ctxRD.moveTo(PRD.l,HRD-PRD.b);ctxRD.lineTo(WRD-PRD.r,HRD-PRD.b);ctxRD.stroke();ctxRD.beginPath();ctxRD.moveTo(PRD.l,PRD.t);ctxRD.lineTo(PRD.l,HRD-PRD.b);ctxRD.stroke();
+  RC(ctxRD);ctxRD.fillStyle='#3a3a3a';ctxRD.font='9px IBM Plex Mono';ctxRD.textAlign='center';
+  for(var i=0;i<=5;i++){var xv=x0+i*(x1-x0)/5;ctxRD.fillText(xv.toFixed(1),cx(xv),HRD-PRD.b+13);ctxRD.textAlign='right';ctxRD.fillText((y0+i*(y1-y0)/5).toFixed(1),PRD.l-4,cy(y0+i*(y1-y0)/5)+3);ctxRD.textAlign='center';}
+  RC(ctxRD);ctxRD.strokeStyle='rgba(168,255,120,0.4)';ctxRD.lineWidth=1.5;ctxRD.setLineDash([3,3]);
+  p.forEach(function(q){var yh=m*q.x+b;ctxRD.beginPath();ctxRD.moveTo(cx(q.x),cy(q.y));ctxRD.lineTo(cx(q.x),cy(yh));ctxRD.stroke();});RC(ctxRD);
+  RC(ctxRD);ctxRD.strokeStyle='#f5e642';ctxRD.lineWidth=2.5;ctxRD.shadowColor='#f5e64250';ctxRD.shadowBlur=10;ctxRD.beginPath();ctxRD.moveTo(cx(x0),cy(m*x0+b));ctxRD.lineTo(cx(x1),cy(m*x1+b));ctxRD.stroke();RC(ctxRD);
+  RC(ctxRD);p.forEach(function(q){ctxRD.beginPath();ctxRD.arc(cx(q.x),cy(q.y),6,0,Math.PI*2);ctxRD.fillStyle='rgba(255,77,109,0.85)';ctxRD.fill();ctxRD.strokeStyle='#0d0d0d';ctxRD.lineWidth=1.5;ctxRD.stroke();});
+  RC(ctxRD);ctxRD.fillStyle='#f5e642';ctxRD.font='bold 10px IBM Plex Mono';ctxRD.textAlign='left';ctxRD.fillText('R²='+r2.toFixed(3)+' | ŷ='+m.toFixed(3)+'x + '+b.toFixed(3),PRD.l+4,PRD.t+14);
+  var tipo,cor;if(r2>=0.7&&m>0){tipo='Relação positiva forte';cor='#a8ff78';}else if(r2>=0.7&&m<0){tipo='Relação negativa forte';cor='#7dd3fc';}else if(r2>=0.3){tipo='Relação moderada';cor='#f5e642';}else{tipo='Relação fraca ou nula';cor='#ff4d6d';}
+  document.getElementById('rdInterp').innerHTML='<div style="color:'+cor+';font-weight:600;margin-bottom:5px">'+tipo+'</div><div style="margin-bottom:4px">R²=<b style="color:var(--yel)">'+r2.toFixed(3)+'</b> → reta explica <b style="color:var(--yel)">'+(r2*100).toFixed(1)+'%</b> da variação de Y.</div><div style="margin-bottom:4px">Equação: <b style="color:var(--txt)">ŷ = '+m.toFixed(3)+'·x + '+b.toFixed(3)+'</b></div><div>p-valor: <b style="color:'+pColor+'">'+pStr+'</b> → '+pInterp+'</div>';
+  document.getElementById('rdInterpSec').style.display='block';
+}
+
+
+// ═══ BOXPLOT ═════════════════════════════════════════════
+var cvB=document.getElementById('cvB'),ctxB=cvB.getContext('2d');
+var WB=480,HB=260,PB={l:50,r:20,t:34,b:40};
+var bData=[];
+function bQ(s,q){var pos=q*(s.length-1),lo=Math.floor(pos),hi=Math.ceil(pos);return s[lo]+(s[hi]-s[lo])*(pos-lo);}
+function bEx(str){document.getElementById('bInput').value=str;bCalc();}
+function bClear(){document.getElementById('bInput').value='';bData=[];document.getElementById('bChips').innerHTML='';document.getElementById('bStepSec').style.display='none';document.getElementById('bWarn').style.display='none';['bQ1','bMed','bQ3','bIQR','bMean','bMode','bSd','bN'].forEach(function(id){document.getElementById(id).textContent='—';});bEmpty();}
+function bEmpty(){RC(ctxB);ctxB.clearRect(0,0,WB,HB);ctxB.fillStyle='#0f0f0f';ctxB.fillRect(0,0,WB,HB);RC(ctxB);ctxB.fillStyle='#333';ctxB.font='12px IBM Plex Mono';ctxB.textAlign='center';ctxB.fillText('← Digite pelo menos 5 números',WB/2,HB/2);}
+function bCalc(){
+  var tokens=document.getElementById('bInput').value.trim().split(/[\s,;]+/).filter(function(t){return t!=='';});
+  bData=tokens.map(Number).filter(function(v){return !isNaN(v)&&isFinite(v);});
+  bData.sort(function(a,b2){return a-b2;});
+  bChips();
+  var w=document.getElementById('bWarn');
+  if(bData.length>0&&bData.length<5){w.textContent='⚠ Mínimo 5 valores. Você tem '+bData.length+'.';w.style.display='block';bEmpty();document.getElementById('bStepSec').style.display='none';['bQ1','bMed','bQ3','bIQR','bMean','bMode','bSd','bN'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  w.style.display='none';
+  if(bData.length>=5){bDraw();bSteps();}else bEmpty();
+}
+function bChips(){
+  var s=bData,n=s.length,el=document.getElementById('bChips');
+  if(!n){el.innerHTML='';return;}
+  el.innerHTML=s.map(function(v,i){
+    var color='#555',bg='#1a1a1a',lbl='';
+    if(n%2===1&&i===(n-1)/2){color='#f5e642';bg='rgba(245,230,66,0.1)';lbl='Med';}
+    else if(n%2===0&&(i===n/2-1||i===n/2)){color='#f5e642';bg='rgba(245,230,66,0.08)';lbl=i===n/2-1?'M₁':'M₂';}
+    var q1i=(n-1)*0.25,q3i=(n-1)*0.75;
+    if(Math.abs(i-q1i)<0.55&&lbl===''){color='#7dd3fc';bg='rgba(125,211,252,0.08)';lbl='Q1';}
+    if(Math.abs(i-q3i)<0.55&&lbl===''){color='#a8ff78';bg='rgba(168,255,120,0.08)';lbl='Q3';}
+    return '<span class="chip" style="background:'+bg+';color:'+color+';border-color:'+color+'40">'+v+(lbl?'<span class="chip-lbl" style="color:'+color+'">'+lbl+'</span>':'')+'</span>';
+  }).join('');
+}
+function bSteps(){
+  var s=bData,n=s.length;
+  var q1=bQ(s,.25),med=bQ(s,.5),q3=bQ(s,.75),iqr=q3-q1;
+  var wLo=q1-1.5*iqr,wHi=q3+1.5*iqr;
+  var lo=s.find(function(d){return d>=wLo;})||wLo;
+  var hi=[].concat(s).reverse().find(function(d){return d<=wHi;})||wHi;
+  var outs=s.filter(function(d){return d<wLo||d>wHi;});
+  var mean=s.reduce(function(a,b2){return a+b2;},0)/n;
+  var sd=Math.sqrt(s.reduce(function(a,b2){return a+(b2-mean)*(b2-mean);},0)/n);
+  var freq={};s.forEach(function(v){freq[v]=(freq[v]||0)+1;});
+  var maxF=Math.max.apply(null,Object.values(freq));
+  var modes=Object.keys(freq).filter(function(k){return freq[k]===maxF;}).map(Number);
+  var modeStr=maxF===1?'Amodal':modes.join(', ')+'('+maxF+'×)';
+  var medTxt=n%2===1?'N='+n+' ímpar → '+((n-1)/2+1)+'º valor = <b style="color:#f5e642">'+s[(n-1)/2]+'</b>':'N='+n+' par → ('+s[n/2-1]+'+'+s[n/2]+')/2 = <b style="color:#f5e642">'+med.toFixed(1)+'</b>';
+  document.getElementById('bSteps').innerHTML='<div>① <b>Ordenado:</b> '+s.join(' , ')+'</div><div>② <b>Mediana:</b> '+medTxt+'</div><div>③ <b style="color:#7dd3fc">Q1='+q1.toFixed(2)+'</b> | <b style="color:#a8ff78">Q3='+q3.toFixed(2)+'</b></div><div>④ <b style="color:#c084fc">IQR='+iqr.toFixed(2)+'</b></div><div>⑤ Bigodes: <b>['+lo.toFixed(1)+', '+hi.toFixed(1)+']</b></div><div>'+(outs.length?'<span style="color:#ff4d6d">⑥ Outliers: '+outs.join(', ')+'</span>':'<span style="color:#a8ff78">⑥ Sem outliers</span>')+'</div><div>⑦ <b style="color:#ff4d6d">Média='+mean.toFixed(2)+'</b> | <b style="color:#c084fc">DP='+sd.toFixed(2)+'</b></div><div>⑧ <b style="color:var(--cya)">Moda: '+modeStr+'</b></div>';
+  document.getElementById('bStepSec').style.display='block';
+  document.getElementById('bQ1').textContent=q1.toFixed(2);document.getElementById('bMed').textContent=med.toFixed(2);document.getElementById('bQ3').textContent=q3.toFixed(2);document.getElementById('bIQR').textContent=iqr.toFixed(2);
+  document.getElementById('bMean').textContent=mean.toFixed(2);document.getElementById('bMode').textContent=modeStr;document.getElementById('bSd').textContent=sd.toFixed(2);document.getElementById('bN').textContent=n;
+}
+function bDraw(){
+  var s=bData,q1=bQ(s,.25),med=bQ(s,.5),q3=bQ(s,.75),iqr=q3-q1;
+  var wLo=q1-1.5*iqr,wHi=q3+1.5*iqr;
+  var lo=s.find(function(d){return d>=wLo;})||wLo;
+  var hi=[].concat(s).reverse().find(function(d){return d<=wHi;})||wHi;
+  var outs=s.filter(function(d){return d<wLo||d>wHi;});
+  var mean=s.reduce(function(a,b2){return a+b2;},0)/s.length;
+  var all=[lo,hi,mean].concat(outs);
+  var dMin=Math.min.apply(null,all)-iqr*0.4,dMax=Math.max.apply(null,all)+iqr*0.4;
+  var toX=function(v){return PB.l+(v-dMin)/(dMax-dMin)*(WB-PB.l-PB.r);};
+  var midY=HB/2+4,boxH=64;
+  RC(ctxB);ctxB.clearRect(0,0,WB,HB);ctxB.fillStyle='#0f0f0f';ctxB.fillRect(0,0,WB,HB);
+  RC(ctxB);s.forEach(function(v){ctxB.beginPath();ctxB.arc(toX(v),midY-boxH/2-18,3,0,Math.PI*2);ctxB.fillStyle=outs.indexOf(v)>=0?'rgba(255,77,109,0.6)':'rgba(125,211,252,0.35)';ctxB.fill();});
+  RC(ctxB);ctxB.strokeStyle='#1a1a1a';ctxB.lineWidth=1;[lo,q1,med,q3,hi].forEach(function(v){ctxB.beginPath();ctxB.moveTo(toX(v),PB.t);ctxB.lineTo(toX(v),HB-PB.b+8);ctxB.stroke();});
+  RC(ctxB);ctxB.strokeStyle='rgba(240,237,232,0.4)';ctxB.lineWidth=2;ctxB.beginPath();ctxB.moveTo(toX(lo),midY);ctxB.lineTo(toX(q1),midY);ctxB.stroke();ctxB.beginPath();ctxB.moveTo(toX(q3),midY);ctxB.lineTo(toX(hi),midY);ctxB.stroke();[lo,hi].forEach(function(v){ctxB.beginPath();ctxB.moveTo(toX(v),midY-15);ctxB.lineTo(toX(v),midY+15);ctxB.stroke();});
+  RC(ctxB);ctxB.fillStyle='rgba(125,211,252,0.1)';ctxB.fillRect(toX(q1),midY-boxH/2,toX(q3)-toX(q1),boxH);ctxB.strokeStyle='#7dd3fc';ctxB.lineWidth=2.5;ctxB.strokeRect(toX(q1),midY-boxH/2,toX(q3)-toX(q1),boxH);
+  RC(ctxB);ctxB.strokeStyle='#f5e642';ctxB.lineWidth=3.5;ctxB.shadowColor='#f5e64280';ctxB.shadowBlur=10;ctxB.beginPath();ctxB.moveTo(toX(med),midY-boxH/2);ctxB.lineTo(toX(med),midY+boxH/2);ctxB.stroke();RC(ctxB);
+  RC(ctxB);ctxB.strokeStyle='#ff4d6d';ctxB.lineWidth=2;ctxB.setLineDash([5,4]);ctxB.beginPath();ctxB.moveTo(toX(mean),midY-boxH/2);ctxB.lineTo(toX(mean),midY+boxH/2);ctxB.stroke();RC(ctxB);
+  ctxB.fillStyle='#ff4d6d';ctxB.beginPath();ctxB.moveTo(toX(mean),midY-boxH/2-2);ctxB.lineTo(toX(mean)-5,midY-boxH/2-10);ctxB.lineTo(toX(mean)+5,midY-boxH/2-10);ctxB.closePath();ctxB.fill();
+  outs.forEach(function(v){RC(ctxB);ctxB.beginPath();ctxB.arc(toX(v),midY,7,0,Math.PI*2);ctxB.strokeStyle='#ff4d6d';ctxB.lineWidth=2;ctxB.stroke();ctxB.fillStyle='rgba(255,77,109,0.2)';ctxB.fill();});
+  [{v:lo,l:'mín',c:'#555'},{v:q1,l:'Q1',c:'#7dd3fc'},{v:med,l:'Med',c:'#f5e642'},{v:q3,l:'Q3',c:'#a8ff78'},{v:hi,l:'máx',c:'#555'}].forEach(function(lb){RC(ctxB);ctxB.fillStyle=lb.c;ctxB.font='bold 9px IBM Plex Mono';ctxB.textAlign='center';ctxB.fillText(lb.l,toX(lb.v),midY-boxH/2-26);ctxB.fillText(Number.isInteger(lb.v)?lb.v:lb.v.toFixed(1),toX(lb.v),HB-PB.b+20);});
+}
+
+
+// ═══ HISTOGRAMA ══════════════════════════════════════════
+var cvH=document.getElementById('cvH'),ctxH=cvH.getContext('2d');
+var WH=480,HH=260,PH={l:44,r:16,t:18,b:34};
+var hRaw=[],hManual=null,hDragBar=-1;
+function hGen(type){hManual=null;hRaw=[];var n=400;if(type==='normal'){for(var i=0;i<n;i++)hRaw.push(randn()*15+50);}else if(type==='skewR'){for(var i=0;i<n;i++)hRaw.push(Math.exp(randn()*0.6+2.5));}else if(type==='skewL'){for(var i=0;i<n;i++)hRaw.push(100-Math.exp(randn()*0.6+2.5));}else if(type==='bimodal'){for(var i=0;i<n/2;i++){hRaw.push(randn()*8+30);hRaw.push(randn()*8+70);}}else if(type==='uniform'){for(var i=0;i<n;i++)hRaw.push(Math.random()*80+10);}drawHist();}
+function drawHist(){
+  var bins=parseInt(document.getElementById('hBins').value);
+  document.getElementById('hBinL').textContent=bins;document.getElementById('hBinV').textContent=bins;
+  if(!hRaw.length&&!hManual){hGen('normal');return;}
+  var counts,xMin,xMax,xStep;
+  if(hManual){counts=hManual;xMin=0;xMax=bins;xStep=1;}
+  else{xMin=Math.min.apply(null,hRaw);xMax=Math.max.apply(null,hRaw);xStep=(xMax-xMin)/bins;counts=new Array(bins).fill(0);hRaw.forEach(function(v){var idx=Math.floor((v-xMin)/xStep);if(idx>=bins)idx=bins-1;counts[idx]++;});}
+  var maxC=Math.max.apply(null,counts.concat([1])),bw=(WH-PH.l-PH.r)/bins;
+  var cy=function(c){return HH-PH.b-(c/(maxC*1.15))*(HH-PH.t-PH.b);};
+  RC(ctxH);ctxH.clearRect(0,0,WH,HH);ctxH.fillStyle='#0f0f0f';ctxH.fillRect(0,0,WH,HH);
+  RC(ctxH);ctxH.strokeStyle='#1a1a1a';ctxH.lineWidth=1;for(var i=0;i<=5;i++){var yg=HH-PH.b-(i/5)*(HH-PH.t-PH.b);ctxH.beginPath();ctxH.moveTo(PH.l,yg);ctxH.lineTo(WH-PH.r,yg);ctxH.stroke();}
+  counts.forEach(function(c,i){RC(ctxH);var x=PH.l+i*bw,y=cy(c),bh=HH-PH.b-y;ctxH.fillStyle=i===hDragBar?'rgba(245,230,66,0.6)':'rgba(125,211,252,0.5)';ctxH.fillRect(x+1,y,bw-2,bh);ctxH.strokeStyle=i===hDragBar?'#f5e642':'#7dd3fc';ctxH.lineWidth=1.5;ctxH.strokeRect(x+1,y,bw-2,bh);});
+  RC(ctxH);ctxH.strokeStyle='#333';ctxH.lineWidth=1.5;ctxH.beginPath();ctxH.moveTo(PH.l,HH-PH.b);ctxH.lineTo(WH-PH.r,HH-PH.b);ctxH.stroke();
+  RC(ctxH);ctxH.fillStyle='#3a3a3a';ctxH.font='9px IBM Plex Mono';ctxH.textAlign='center';
+  if(!hManual){for(var i=0;i<=bins;i+=Math.max(1,Math.ceil(bins/6))){ctxH.fillText((xMin+i*xStep).toFixed(0),PH.l+i*bw,HH-PH.b+13);}}
+  if(hRaw.length&&!hManual){
+    var mn=hRaw.reduce(function(a,b2){return a+b2;},0)/hRaw.length;
+    var sd=Math.sqrt(hRaw.reduce(function(a,b2){return a+(b2-mn)*(b2-mn);},0)/hRaw.length);
+    var toX=function(v){return PH.l+(v-xMin)/xStep*bw;};
+    document.getElementById('hMean').textContent=mn.toFixed(1);document.getElementById('hSd').textContent=sd.toFixed(1);document.getElementById('hN').textContent=hRaw.length;
+    RC(ctxH);ctxH.strokeStyle='#f5e642';ctxH.lineWidth=2;ctxH.shadowColor='#f5e64260';ctxH.shadowBlur=6;ctxH.beginPath();ctxH.moveTo(toX(mn),PH.t);ctxH.lineTo(toX(mn),HH-PH.b);ctxH.stroke();RC(ctxH);
+    ctxH.fillStyle='#f5e642';ctxH.font='bold 9px IBM Plex Mono';ctxH.textAlign='center';ctxH.fillText('μ',toX(mn),PH.t+10);
+    RC(ctxH);ctxH.strokeStyle='#ff4d6d';ctxH.lineWidth=1.5;ctxH.setLineDash([5,4]);
+    [mn-sd,mn+sd].forEach(function(v){if(v>=xMin&&v<=xMax){ctxH.beginPath();ctxH.moveTo(toX(v),PH.t);ctxH.lineTo(toX(v),HH-PH.b);ctxH.stroke();}});RC(ctxH);
+  }else{document.getElementById('hMean').textContent='—';document.getElementById('hSd').textContent='—';document.getElementById('hN').textContent=0;}
+}
+cvH.addEventListener('mousedown',function(e){var r=cvH.getBoundingClientRect(),mx=(e.clientX-r.left)*WH/r.width,bins=parseInt(document.getElementById('hBins').value),bw=(WH-PH.l-PH.r)/bins;hDragBar=Math.floor((mx-PH.l)/bw);if(hDragBar<0||hDragBar>=bins){hDragBar=-1;return;}if(!hManual&&hRaw.length){var xMin=Math.min.apply(null,hRaw),xMax=Math.max.apply(null,hRaw),xStep=(xMax-xMin)/bins;hManual=new Array(bins).fill(0);hRaw.forEach(function(v){var idx=Math.floor((v-xMin)/xStep);if(idx>=bins)idx=bins-1;hManual[idx]++;});}else if(!hManual)hManual=new Array(bins).fill(0);});
+cvH.addEventListener('mousemove',function(e){if(hDragBar===-1||!hManual)return;var r=cvH.getBoundingClientRect(),my=(e.clientY-r.top)*HH/r.height,maxC=Math.max.apply(null,hManual.concat([1])),val=Math.max(0,Math.round((HH-PH.b-my)/(HH-PH.t-PH.b)*maxC*1.15));hManual[hDragBar]=val;drawHist();});
+cvH.addEventListener('mouseup',function(){hDragBar=-1;});
+cvH.addEventListener('touchstart',function(e){var r=cvH.getBoundingClientRect(),mx=(e.touches[0].clientX-r.left)*WH/r.width,bins=parseInt(document.getElementById('hBins').value),bw=(WH-PH.l-PH.r)/bins;hDragBar=Math.floor((mx-PH.l)/bw);if(hDragBar<0||hDragBar>=bins){hDragBar=-1;return;}if(!hManual&&hRaw.length){var xMin=Math.min.apply(null,hRaw),xMax=Math.max.apply(null,hRaw),xStep=(xMax-xMin)/bins;hManual=new Array(bins).fill(0);hRaw.forEach(function(v){var idx=Math.floor((v-xMin)/xStep);if(idx>=bins)idx=bins-1;hManual[idx]++;});}else if(!hManual)hManual=new Array(bins).fill(0);},{passive:true});
+cvH.addEventListener('touchmove',function(e){if(hDragBar===-1||!hManual)return;var r=cvH.getBoundingClientRect(),my=(e.touches[0].clientY-r.top)*HH/r.height,maxC=Math.max.apply(null,hManual.concat([1])),val=Math.max(0,Math.round((HH-PH.b-my)/(HH-PH.t-PH.b)*maxC*1.15));hManual[hDragBar]=val;drawHist();},{passive:true});
+cvH.addEventListener('touchend',function(){hDragBar=-1;});
+
+// HISTOGRAMA — meus dados
+var cvH2=document.getElementById('cvH2'),ctxH2=cvH2.getContext('2d');
+var hdData=[];
+function hdEx(str){document.getElementById('hdInput').value=str;hdCalc();}
+function hdClear(){document.getElementById('hdInput').value='';hdData=[];document.getElementById('hdWarn').style.display='none';document.getElementById('hdInterpSec').style.display='none';['hdN','hdBinV','hdMean','hdSd','hdMin','hdMax','hdMed','hdMode'].forEach(function(id){document.getElementById(id).textContent='—';});hdEmpty();}
+function hdEmpty(){RC(ctxH2);ctxH2.clearRect(0,0,WH,HH);ctxH2.fillStyle='#0f0f0f';ctxH2.fillRect(0,0,WH,HH);RC(ctxH2);ctxH2.fillStyle='#333';ctxH2.font='12px IBM Plex Mono';ctxH2.textAlign='center';ctxH2.fillText('← Digite dados acima',WH/2,HH/2);}
+function hdDraw(){if(!hdData.length){hdEmpty();return;}hdCalcDraw();}
+function hdCalc(){
+  var tokens=document.getElementById('hdInput').value.trim().split(/[\s,;]+/).filter(function(t){return t!=='';});
+  hdData=tokens.map(Number).filter(function(v){return !isNaN(v)&&isFinite(v);});
+  var w=document.getElementById('hdWarn');
+  if(hdData.length>0&&hdData.length<5){w.textContent='⚠ Mínimo 5. Você tem '+hdData.length+'.';w.style.display='block';hdEmpty();document.getElementById('hdInterpSec').style.display='none';['hdN','hdMean','hdSd','hdMin','hdMax','hdMed','hdMode'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  w.style.display='none';if(hdData.length>=5)hdCalcDraw();else hdEmpty();
+}
+function hdCalcDraw(){
+  var d=hdData,n=d.length,bins=parseInt(document.getElementById('hdBins').value);
+  document.getElementById('hdBinL').textContent=bins;document.getElementById('hdBinV').textContent=bins;
+  var mean=d.reduce(function(a,b2){return a+b2;},0)/n;
+  var sd=Math.sqrt(d.reduce(function(a,b2){return a+(b2-mean)*(b2-mean);},0)/n)||1;
+  var sorted=[].concat(d).sort(function(a,b2){return a-b2;});
+  var med=sorted.length%2===1?sorted[(sorted.length-1)/2]:(sorted[sorted.length/2-1]+sorted[sorted.length/2])/2;
+  var freq={};d.forEach(function(v){freq[v]=(freq[v]||0)+1;});
+  var maxF=Math.max.apply(null,Object.values(freq));
+  var modes=Object.keys(freq).filter(function(k){return freq[k]===maxF;}).map(Number);
+  var modeStr=maxF===1?'Amodal':modes.slice(0,3).join(','+(modes.length>3?'…':''));
+  var dMin=Math.min.apply(null,d),dMax=Math.max.apply(null,d);
+  document.getElementById('hdN').textContent=n;document.getElementById('hdMean').textContent=mean.toFixed(2);document.getElementById('hdSd').textContent=sd.toFixed(2);document.getElementById('hdMin').textContent=dMin;document.getElementById('hdMax').textContent=dMax;document.getElementById('hdMed').textContent=med.toFixed(2);document.getElementById('hdMode').textContent=modeStr;
+  var xMin=dMin-(dMax-dMin)*0.05,xMax=dMax+(dMax-dMin)*0.05;if(xMin===xMax){xMin-=1;xMax+=1;}
+  var bw=(xMax-xMin)/bins;
+  var counts=new Array(bins).fill(0);d.forEach(function(v){var i=Math.max(0,Math.min(bins-1,Math.floor((v-xMin)/bw)));counts[i]++;});
+  var dens=counts.map(function(c){return c/(n*bw);});
+  var yMax=Math.max.apply(null,dens.concat([pdf(mean,mean,sd)]))*1.3||1;
+  var cx=function(v){return PH.l+(v-xMin)/(xMax-xMin)*(WH-PH.l-PH.r);};
+  var cy=function(v){return HH-PH.b-(v/yMax)*(HH-PH.t-PH.b);};
+  RC(ctxH2);ctxH2.clearRect(0,0,WH,HH);ctxH2.fillStyle='#0f0f0f';ctxH2.fillRect(0,0,WH,HH);
+  RC(ctxH2);ctxH2.strokeStyle='#1a1a1a';ctxH2.lineWidth=1;for(var i=0;i<=5;i++){var yg=HH-PH.b-(i/5)*(HH-PH.t-PH.b);ctxH2.beginPath();ctxH2.moveTo(PH.l,yg);ctxH2.lineTo(WH-PH.r,yg);ctxH2.stroke();}
+  counts.forEach(function(c,i){RC(ctxH2);var x=cx(xMin+i*bw),x2=cx(xMin+(i+1)*bw),y=cy(dens[i]),barH=HH-PH.b-y;ctxH2.fillStyle='rgba(125,211,252,0.45)';ctxH2.fillRect(x+1,y,x2-x-2,barH);ctxH2.strokeStyle='#7dd3fc';ctxH2.lineWidth=1.5;ctxH2.strokeRect(x+1,y,x2-x-2,barH);if(c>0&&barH>16){RC(ctxH2);ctxH2.fillStyle='rgba(125,211,252,0.9)';ctxH2.font='bold 9px IBM Plex Mono';ctxH2.textAlign='center';ctxH2.fillText(c,(x+x2)/2,y+barH/2+4);}});
+  RC(ctxH2);ctxH2.strokeStyle='#ff4d6d';ctxH2.lineWidth=2;ctxH2.shadowColor='#ff4d6d40';ctxH2.shadowBlur=6;ctxH2.beginPath();for(var i=0;i<=300;i++){var xv=xMin+i/300*(xMax-xMin);if(i===0)ctxH2.moveTo(cx(xv),cy(pdf(xv,mean,sd)));else ctxH2.lineTo(cx(xv),cy(pdf(xv,mean,sd)));}ctxH2.stroke();RC(ctxH2);
+  RC(ctxH2);ctxH2.strokeStyle='#f5e642';ctxH2.lineWidth=2;ctxH2.shadowColor='#f5e64260';ctxH2.shadowBlur=6;ctxH2.beginPath();ctxH2.moveTo(cx(mean),PH.t);ctxH2.lineTo(cx(mean),HH-PH.b);ctxH2.stroke();RC(ctxH2);
+  ctxH2.fillStyle='#f5e642';ctxH2.font='bold 9px IBM Plex Mono';ctxH2.textAlign='center';ctxH2.fillText('x̄='+mean.toFixed(1),cx(mean),PH.t+10);
+  RC(ctxH2);ctxH2.strokeStyle='#ff4d6d';ctxH2.lineWidth=1.5;ctxH2.setLineDash([5,4]);[mean-sd,mean+sd].forEach(function(v){if(v>=xMin&&v<=xMax){ctxH2.beginPath();ctxH2.moveTo(cx(v),PH.t);ctxH2.lineTo(cx(v),HH-PH.b);ctxH2.stroke();}});RC(ctxH2);
+  RC(ctxH2);ctxH2.strokeStyle='#333';ctxH2.lineWidth=1.5;ctxH2.beginPath();ctxH2.moveTo(PH.l,HH-PH.b);ctxH2.lineTo(WH-PH.r,HH-PH.b);ctxH2.stroke();
+  RC(ctxH2);ctxH2.fillStyle='#3a3a3a';ctxH2.font='9px IBM Plex Mono';ctxH2.textAlign='center';
+  for(var i=0;i<=bins;i+=Math.max(1,Math.ceil(bins/6))){ctxH2.fillText((xMin+i*bw).toFixed(1),cx(xMin+i*bw),HH-PH.b+13);}
+  var sk=d.reduce(function(a,b2){return a+Math.pow((b2-mean)/sd,3);},0)/n;
+  var ku=d.reduce(function(a,b2){return a+Math.pow((b2-mean)/sd,4);},0)/n;
+  var tipo,cor;if(Math.abs(sk)<0.5&&Math.abs(ku-3)<1){tipo='✓ Aproximadamente Normal';cor='#a8ff78';}else if(sk>1){tipo='✗ Assimetria à Direita';cor='#f5e642';}else if(sk<-1){tipo='✗ Assimetria à Esquerda';cor='#7dd3fc';}else{tipo='⚠ Levemente Assimétrica';cor='#f5e642';}
+  var p1=(d.filter(function(v){return Math.abs(v-mean)<=sd;}).length/n*100).toFixed(0);
+  var p2=(d.filter(function(v){return Math.abs(v-mean)<=2*sd;}).length/n*100).toFixed(0);
+  document.getElementById('hdInterp').innerHTML='<div style="color:'+cor+';font-weight:600;margin-bottom:5px">'+tipo+'</div><div style="margin-bottom:4px"><b style="color:var(--yel)">Skewness='+sk.toFixed(2)+'</b> '+(sk>0.5?'→ cauda à direita':sk<-0.5?'→ cauda à esquerda':'→ simétrica')+'</div><div style="margin-bottom:4px"><b style="color:var(--pur)">Curtose='+ku.toFixed(2)+'</b> '+(ku>4?'→ leptocúrtica':ku<2?'→ platicúrtica':'→ próxima da normal')+'</div><div style="background:#1a1a1a;border-radius:6px;padding:8px;border:1px solid '+cor+'40">'+p1+'% em ±1σ (esp.68%) | '+p2+'% em ±2σ (esp.95%)</div>';
+  document.getElementById('hdInterpSec').style.display='block';
+}
+
+
+// ═══ BARRAS + DP ═════════════════════════════════════════
+var cvDP=document.getElementById('cvDP'),ctxDP=cvDP.getContext('2d');
+var WDP=480,HDP=300,PDP={l:52,r:20,t:30,b:60};
+var dpGroups=[],dpMode='dp';
+var dpModeInfo={
+  dp:{label:'± Desvio Padrão',color:'#ff4d6d',desc:'<span style="color:#ff4d6d;font-weight:600">Desvio Padrão (DP)</span> — variabilidade dos dados individuais. Não depende do n.'},
+  ep:{label:'± Erro Padrão',color:'#c084fc',desc:'<span style="color:#c084fc;font-weight:600">Erro Padrão (EP=DP/√n)</span> — precisão da estimativa da média. Diminui com n maior.'},
+  ic:{label:'IC 95%',color:'#a8ff78',desc:'<span style="color:#a8ff78;font-weight:600">IC 95% (x̄ ± t×EP)</span> — onde a média real está com 95% de certeza. Recomendado para comparar grupos.'}
+};
+function dpSetMode(mode){
+  dpMode=mode;
+  ['dpModeDP','dpModeEP','dpModeIC'].forEach(function(id){document.getElementById(id).className='pill';});
+  document.getElementById({dp:'dpModeDP',ep:'dpModeEP',ic:'dpModeIC'}[mode]).className='pill ar';
+  document.getElementById('dpModeDesc').innerHTML=dpModeInfo[mode].desc;
+  dpDraw();
+}
+function tCritical(df){var table={1:12.706,2:4.303,3:3.182,4:2.776,5:2.571,6:2.447,7:2.365,8:2.306,9:2.262,10:2.228,15:2.131,20:2.086,30:2.042,60:2.000};if(df>=120)return 1.960;var dfs=Object.keys(table).map(Number).sort(function(a,b){return a-b;});for(var i=0;i<dfs.length;i++){if(df<=dfs[i])return table[dfs[i]];}return 1.960;}
+var dpExamples={
+  basico:'Controle 12 15 14 13 16 12 15\nTratamento 22 25 21 24 23 26 22',
+  tres:'Grupo A 10 12 11 13 10 12\nGrupo B 18 20 17 21 19 18\nGrupo C 14 13 15 16 14 15',
+  notas:'Turma 1 72 85 78 90 68 82 75 88\nTurma 2 65 70 68 72 66 69 71 73\nTurma 3 80 88 85 92 87 84 90 83',
+  bio:'Espécie A 4.2 3.8 4.5 4.1 3.9 4.3 4.0\nEspécie B 6.1 5.8 6.4 6.0 5.9 6.2 6.3\nEspécie C 2.9 3.1 2.8 3.0 3.2 2.9 3.1\nEspécie D 5.0 4.8 5.2 5.1 4.9 5.3 5.0'
+};
+function dpEx(name){document.getElementById('dpInput').value=dpExamples[name];dpCalc();}
+function dpClear(){document.getElementById('dpInput').value='';dpGroups=[];document.getElementById('dpWarn').style.display='none';document.getElementById('dpStatSec').style.display='none';['dpGrps','dpN','dpMaxSD','dpMinSD'].forEach(function(id){document.getElementById(id).textContent='—';});dpEmpty();}
+function dpEmpty(){RC(ctxDP);ctxDP.clearRect(0,0,WDP,HDP);ctxDP.fillStyle='#0f0f0f';ctxDP.fillRect(0,0,WDP,HDP);RC(ctxDP);ctxDP.fillStyle='#333';ctxDP.font='12px IBM Plex Mono';ctxDP.textAlign='center';ctxDP.fillText('← Digite grupos acima',WDP/2,HDP/2);}
+function dpCalc(){
+  var raw=document.getElementById('dpInput').value.trim();
+  var warn=document.getElementById('dpWarn');
+  if(!raw){dpGroups=[];warn.style.display='none';dpEmpty();document.getElementById('dpStatSec').style.display='none';['dpGrps','dpN','dpMaxSD','dpMinSD'].forEach(function(id){document.getElementById(id).textContent='—';});return;}
+  var lines=raw.split('\n').filter(function(l){return l.trim()!=='';});
+  var parsed=[],erros=[];
+  lines.forEach(function(line,li){
+    var parts=line.trim().split(/\s+/);var name='',nums=[];
+    parts.forEach(function(p){var n=Number(p);if(isNaN(n)||!isFinite(n)){name+=(name?' ':'')+p;}else nums.push(n);});
+    if(!name)name='Grupo '+(li+1);
+    if(nums.length<3)erros.push('"'+name+'": mín 3 (tem '+nums.length+')');else parsed.push({name:name,nums:nums});
+  });
+  if(parsed.length<2){warn.textContent='⚠ Mínimo 2 grupos. '+(erros.length?erros.join(' | '):'');warn.style.display='block';dpEmpty();return;}
+  if(erros.length){warn.textContent='⚠ '+erros.join(' | ');warn.style.display='block';}else warn.style.display='none';
+  dpGroups=parsed.map(function(g){var n=g.nums.length,mean=g.nums.reduce(function(a,b2){return a+b2;},0)/n;var sd=Math.sqrt(g.nums.reduce(function(a,b2){return a+(b2-mean)*(b2-mean);},0)/(n-1));var ep=sd/Math.sqrt(n),ic=tCritical(n-1)*ep;return{name:g.name,nums:g.nums,n:n,mean:mean,sd:sd,ep:ep,ic:ic};});
+  dpDraw();dpStats();
+}
+function dpStats(){
+  var sds=dpGroups.map(function(g){return g.sd;});
+  document.getElementById('dpGrps').textContent=dpGroups.length;
+  document.getElementById('dpN').textContent=dpGroups.map(function(g){return g.n;}).join('/');
+  document.getElementById('dpMaxSD').textContent=Math.max.apply(null,sds).toFixed(2);
+  document.getElementById('dpMinSD').textContent=Math.min.apply(null,sds).toFixed(2);
+  var colors=['#7dd3fc','#a8ff78','#f5e642','#c084fc','#ff4d6d','#00e5ff'];
+  var html='<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:0.6rem;"><tr style="color:var(--mut);border-bottom:1px solid var(--bor)"><td style="padding:4px 6px">Grupo</td><td style="padding:4px 6px;text-align:center">n</td><td style="padding:4px 6px;text-align:center;color:var(--blue)">Média</td><td style="padding:4px 6px;text-align:center;color:#ff4d6d">DP</td><td style="padding:4px 6px;text-align:center;color:#c084fc">EP</td><td style="padding:4px 6px;text-align:center;color:#a8ff78">IC 95%</td></tr>';
+  dpGroups.forEach(function(g,i){html+='<tr style="border-bottom:1px solid #1e1e1e"><td style="padding:4px 6px;color:'+colors[i%colors.length]+';font-weight:600">'+g.name+'</td><td style="padding:4px 6px;text-align:center">'+g.n+'</td><td style="padding:4px 6px;text-align:center;color:var(--blue)">'+g.mean.toFixed(2)+'</td><td style="padding:4px 6px;text-align:center;color:#ff4d6d">'+g.sd.toFixed(2)+'</td><td style="padding:4px 6px;text-align:center;color:#c084fc">'+g.ep.toFixed(2)+'</td><td style="padding:4px 6px;text-align:center;color:#a8ff78">±'+g.ic.toFixed(2)+'</td></tr>';});
+  html+='</table><p style="font-size:0.52rem;color:var(--mut);margin-top:6px">EP=DP/√n | IC95%=±t*×EP</p></div>';
+  document.getElementById('dpStatTable').innerHTML=html;document.getElementById('dpStatSec').style.display='block';
+}
+function dpDraw(){
+  if(!dpGroups.length){dpEmpty();return;}
+  var G=dpGroups,colors=['#7dd3fc','#a8ff78','#f5e642','#c084fc','#ff4d6d','#00e5ff'];
+  var errColor=dpModeInfo[dpMode].color;
+  var getErr=function(g){return {dp:g.sd,ep:g.ep,ic:g.ic}[dpMode];};
+  var maxVal=Math.max.apply(null,G.map(function(g){return g.mean+getErr(g);}))*1.28;
+  var toY=function(v){return HDP-PDP.b-(v/maxVal)*(HDP-PDP.t-PDP.b);};
+  var barW=(WDP-PDP.l-PDP.r)/G.length,barPad=barW*0.16;
+  RC(ctxDP);ctxDP.clearRect(0,0,WDP,HDP);ctxDP.fillStyle='#0f0f0f';ctxDP.fillRect(0,0,WDP,HDP);
+  RC(ctxDP);ctxDP.fillStyle=errColor;ctxDP.font='bold 9px IBM Plex Mono';ctxDP.textAlign='left';ctxDP.fillText('Barra de erro: '+dpModeInfo[dpMode].label,PDP.l,PDP.t-6);
+  RC(ctxDP);ctxDP.strokeStyle='#1a1a1a';ctxDP.lineWidth=1;
+  for(var i=0;i<=5;i++){var yg=HDP-PDP.b-(i/5)*(HDP-PDP.t-PDP.b);ctxDP.beginPath();ctxDP.moveTo(PDP.l,yg);ctxDP.lineTo(WDP-PDP.r,yg);ctxDP.stroke();RC(ctxDP);ctxDP.fillStyle='#3a3a3a';ctxDP.font='9px IBM Plex Mono';ctxDP.textAlign='right';ctxDP.fillText((maxVal*i/5).toFixed(1),PDP.l-5,yg+3);}
+  RC(ctxDP);ctxDP.strokeStyle='#333';ctxDP.lineWidth=1.5;ctxDP.beginPath();ctxDP.moveTo(PDP.l,HDP-PDP.b);ctxDP.lineTo(WDP-PDP.r,HDP-PDP.b);ctxDP.stroke();
+  G.forEach(function(g,i){
+    var color=colors[i%colors.length],err=getErr(g);
+    var x=PDP.l+i*barW+barPad,w=barW-2*barPad,yTop=toY(g.mean),cx2=x+w/2,barH=HDP-PDP.b-yTop;
+    var capW=w*0.22,yErrTop=toY(g.mean+err),yErrBot=toY(Math.max(0,g.mean-err));
+    RC(ctxDP);ctxDP.fillStyle=color+'50';ctxDP.fillRect(x,yTop,w,barH);ctxDP.strokeStyle=color;ctxDP.lineWidth=2;ctxDP.strokeRect(x,yTop,w,barH);
+    RC(ctxDP);ctxDP.strokeStyle=errColor;ctxDP.lineWidth=2.5;ctxDP.shadowColor=errColor+'80';ctxDP.shadowBlur=6;
+    ctxDP.beginPath();ctxDP.moveTo(cx2,yErrBot);ctxDP.lineTo(cx2,yErrTop);ctxDP.stroke();
+    ctxDP.beginPath();ctxDP.moveTo(cx2-capW,yErrTop);ctxDP.lineTo(cx2+capW,yErrTop);ctxDP.stroke();
+    if(g.mean-err>0){ctxDP.beginPath();ctxDP.moveTo(cx2-capW,yErrBot);ctxDP.lineTo(cx2+capW,yErrBot);ctxDP.stroke();}
+    RC(ctxDP);var maxChars=Math.max(4,Math.floor(w/6.5));
+    ctxDP.fillStyle=color;ctxDP.font='bold 10px IBM Plex Mono';ctxDP.textAlign='center';ctxDP.fillText(g.name.length>maxChars?g.name.slice(0,maxChars-1)+'…':g.name,cx2,HDP-PDP.b+16);
+    ctxDP.fillStyle='#555';ctxDP.font='8px IBM Plex Mono';ctxDP.fillText('n='+g.n,cx2,HDP-PDP.b+27);
+    ctxDP.fillStyle=color;ctxDP.font='bold 9px IBM Plex Mono';ctxDP.fillText(g.mean.toFixed(1),cx2,yTop-10);
+    ctxDP.fillStyle=errColor;ctxDP.font='8px IBM Plex Mono';ctxDP.fillText('±'+err.toFixed(2),cx2,yErrTop-5);
+  });
+}
+
+
+// ═══ VALOR-P — FUNÇÕES COMPARTILHADAS ════════════════════
+function parseNums(str){return str.trim().split(/[\s,;]+/).map(Number).filter(function(v){return !isNaN(v)&&isFinite(v);});}
+function mean(a){return a.reduce(function(s,v){return s+v;},0)/a.length;}
+function variance(a,ddof){var m=mean(a);return a.reduce(function(s,v){return s+(v-m)*(v-m);},0)/(a.length-(ddof||0));}
+function sd(a,ddof){return Math.sqrt(variance(a,ddof));}
+
+function pValColor(p){return p<0.001?'#a8ff78':p<0.01?'#a8ff78':p<0.05?'#f5e642':'#ff4d6d';}
+function pValLabel(p){return p<0.001?'p < 0,001 *** (altamente significativo)':p<0.01?'p = '+p.toFixed(4)+' ** (muito significativo)':p<0.05?'p = '+p.toFixed(4)+' * (significativo)':p<0.1?'p = '+p.toFixed(4)+' · (tendência)':'p = '+p.toFixed(4)+' ns (não significativo)';}
+
+// curva t no canvas
+function drawTCurve(ctx,W,H,tVal,df,color){
+  var P={l:40,r:20,t:20,b:34};
+  RC(ctx);ctx.clearRect(0,0,W,H);ctx.fillStyle='#0f0f0f';ctx.fillRect(0,0,W,H);
+  var xMin=-5,xMax=5;
+
+  function lgamma(x){if(x<0.5)return Math.log(Math.PI)-Math.log(Math.abs(Math.sin(Math.PI*x)))-lgamma(1-x);x-=1;var a=0.99999999999980993,c=[676.5203681218851,-1259.1392167224028,771.32342877765313,-176.61502916214059,12.507343278686905,-0.13857109526572012,9.9843695780195716e-6,1.5056327351493116e-7];for(var i=0;i<8;i++)a+=c[i]/(x+i+1);var t2=x+7.5;return 0.5*Math.log(2*Math.PI)+(x+0.5)*Math.log(t2)-t2+Math.log(a);}
+  function tpdf(x){var lbeta=lgamma(0.5)+lgamma(df/2)-lgamma((df+1)/2);return Math.exp(-0.5*(df+1)*Math.log(1+x*x/df)-lbeta)/Math.sqrt(df);}
+
+  // t crítico para α=0,05 bilateral (aproximado)
+  var tcrit=df>=120?1.96:df>=60?2.00:df>=30?2.04:df>=20?2.09:df>=15?2.13:df>=10?2.23:df>=8?2.31:df>=6?2.45:df>=5?2.57:df>=4?2.78:df>=3?3.18:df>=2?4.30:12.7;
+
+  var pts=[];for(var i=0;i<=400;i++){var x=xMin+i/400*(xMax-xMin);pts.push({x:x,y:tpdf(x)});}
+  var yMax=Math.max.apply(null,pts.map(function(p){return p.y;}))*1.2;
+  var cx=function(v){return P.l+(v-xMin)/(xMax-xMin)*(W-P.l-P.r);};
+  var cy=function(v){return H-P.b-(v/yMax)*(H-P.t-P.b);};
+
+  // ── Área CINZA: região de não-rejeição (centro) ──
+  RC(ctx);ctx.fillStyle='rgba(125,211,252,0.08)';
+  ctx.beginPath();ctx.moveTo(cx(-tcrit),cy(0));
+  for(var i=0;i<=400;i++){var xv=xMin+i/400*(xMax-xMin);if(xv>=-tcrit&&xv<=tcrit)ctx.lineTo(cx(xv),cy(tpdf(xv)));}
+  ctx.lineTo(cx(tcrit),cy(0));ctx.closePath();ctx.fill();
+
+  // ── Área VERMELHA: caudas de rejeição (além do t crítico) ──
+  RC(ctx);ctx.fillStyle='rgba(255,77,109,0.30)';
+  // cauda esquerda
+  ctx.beginPath();ctx.moveTo(cx(xMin),cy(0));
+  for(var i=0;i<=400;i++){var xv2=xMin+i/400*(xMax-xMin);if(xv2<=(-tcrit))ctx.lineTo(cx(xv2),cy(tpdf(xv2)));}
+  ctx.lineTo(cx(-tcrit),cy(0));ctx.closePath();ctx.fill();
+  // cauda direita
+  ctx.beginPath();ctx.moveTo(cx(tcrit),cy(0));
+  for(var i=0;i<=400;i++){var xv3=xMin+i/400*(xMax-xMin);if(xv3>=tcrit)ctx.lineTo(cx(xv3),cy(tpdf(xv3)));}
+  ctx.lineTo(cx(xMax),cy(0));ctx.closePath();ctx.fill();
+
+  // ── Curva t ──
+  RC(ctx);ctx.strokeStyle='#7dd3fc';ctx.lineWidth=2;
+  ctx.beginPath();pts.forEach(function(p,i){if(i===0)ctx.moveTo(cx(p.x),cy(p.y));else ctx.lineTo(cx(p.x),cy(p.y));});ctx.stroke();
+
+  // ── Linhas do t crítico ──
+  RC(ctx);ctx.strokeStyle='rgba(255,77,109,0.6)';ctx.lineWidth=1;ctx.setLineDash([3,3]);
+  ctx.beginPath();ctx.moveTo(cx(-tcrit),cy(0));ctx.lineTo(cx(-tcrit),cy(tpdf(-tcrit)));ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx(tcrit),cy(0));ctx.lineTo(cx(tcrit),cy(tpdf(tcrit)));ctx.stroke();RC(ctx);
+
+  // ── Linha do t OBSERVADO (amarela, mais grossa) ──
+  var tv=Math.max(xMin+0.1,Math.min(xMax-0.1,tVal));
+  RC(ctx);ctx.strokeStyle='#f5e642';ctx.lineWidth=2.5;ctx.shadowColor='#f5e64280';ctx.shadowBlur=6;
+  ctx.beginPath();ctx.moveTo(cx(tv),cy(0));ctx.lineTo(cx(tv),cy(tpdf(tv)));ctx.stroke();RC(ctx);
+
+  // ── Labels ──
+  RC(ctx);ctx.fillStyle='#3a3a3a';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+  [-4,-3,-2,-1,0,1,2,3,4].forEach(function(v){ctx.fillText(v,cx(v),H-P.b+13);});
+
+  // label t observado
+  RC(ctx);ctx.fillStyle='#f5e642';ctx.font='bold 9px IBM Plex Mono';ctx.textAlign='center';
+  var labelY=cy(tpdf(tv))-8;if(labelY<P.t+10)labelY=cy(0)-8;
+  ctx.fillText('t='+tVal.toFixed(3),cx(tv),labelY);
+
+  // label t crítico
+  RC(ctx);ctx.fillStyle='rgba(255,77,109,0.8)';ctx.font='8px IBM Plex Mono';ctx.textAlign='center';
+  ctx.fillText('±'+tcrit.toFixed(2),cx(tcrit),cy(0)+14);
+
+  // label gl e região
+  RC(ctx);ctx.fillStyle='#555';ctx.font='8px IBM Plex Mono';ctx.textAlign='right';
+  ctx.fillText('gl='+df,W-P.r-4,P.t+10);
+  RC(ctx);ctx.fillStyle='rgba(255,77,109,0.7)';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';
+  ctx.fillText('rejeição (α=0,05)',cx(xMin)+2,P.t+10);
+  RC(ctx);ctx.fillStyle='rgba(125,211,252,0.6)';ctx.font='8px IBM Plex Mono';ctx.textAlign='center';
+  ctx.fillText('não-rejeição',cx(0),P.t+10);
+}
+
+// ── TESTE-T 1 AMOSTRA ────────────────────────────────────
+var cvP1=document.getElementById('cvP1'),ctxP1=cvP1.getContext('2d');
+function p1Ex(data,mu){document.getElementById('p1data').value=data;document.getElementById('p1mu').value=mu;p1Calc();}
+function p1Redraw(){p1Calc();}
+function p1Calc(){
+  var nums=parseNums(document.getElementById('p1data').value);
+  var mu0=parseFloat(document.getElementById('p1mu').value);
+  var w=document.getElementById('p1warn');
+  ['p1n','p1mean','p1t','p1p'].forEach(function(id){document.getElementById(id).textContent='—';});
+  document.getElementById('p1stepSec').style.display='none';
+  if(nums.length<3){if(nums.length>0){w.textContent='⚠ Mínimo 3 valores.';w.style.display='block';}else w.style.display='none';RC(ctxP1);ctxP1.clearRect(0,0,480,220);ctxP1.fillStyle='#0f0f0f';ctxP1.fillRect(0,0,480,220);return;}
+  w.style.display='none';
+  var n=nums.length,xm=mean(nums),s=sd(nums,1),se=s/Math.sqrt(n),t=(xm-mu0)/se,df=n-1;
+  var pval=2*(1-tCDF(Math.abs(t),df));
+  document.getElementById('p1n').textContent=n;
+  document.getElementById('p1mean').textContent=xm.toFixed(3);
+  document.getElementById('p1t').textContent=t.toFixed(3);
+  document.getElementById('p1p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
+  document.getElementById('p1p').style.color=pValColor(pval);
+  drawTCurve(ctxP1,480,220,t,df,'#f5e642');
+  var ci95=2.0*se;
+  document.getElementById('p1steps').innerHTML=
+    '<div>① n='+n+' | x̄='+xm.toFixed(3)+' | DP='+s.toFixed(3)+'</div>'+
+    '<div>② EP = DP/√n = '+s.toFixed(3)+'/√'+n+' = <b style="color:var(--blue)">'+se.toFixed(4)+'</b></div>'+
+    '<div>③ t = (x̄ − μ₀)/EP = ('+xm.toFixed(3)+'−'+mu0+')/'+se.toFixed(4)+' = <b style="color:var(--yel)">'+t.toFixed(4)+'</b></div>'+
+    '<div>④ gl = n−1 = <b>'+df+'</b></div>'+
+    '<div>⑤ <b style="color:'+pValColor(pval)+'">'+pValLabel(pval)+'</b></div>'+
+    '<div>⑥ IC 95%: ['+( xm-1.96*se).toFixed(3)+', '+(xm+1.96*se).toFixed(3)+']</div>'+
+    '<div>'+(pval<0.05?'✓ Rejeita H₀: a média é significativamente diferente de '+mu0:'✗ Não rejeita H₀: sem evidência de diferença em relação a '+mu0)+'</div>';
+  document.getElementById('p1stepSec').style.display='block';
+}
+
+// ── TESTE-T 2 AMOSTRAS ───────────────────────────────────
+var cvP2=document.getElementById('cvP2'),ctxP2=cvP2.getContext('2d');
+function p2Ex(g1,g2){document.getElementById('p2g1').value=g1;document.getElementById('p2g2').value=g2;p2Calc();}
+function p2Redraw(){p2Calc();}
+function p2Calc(){
+  var g1=parseNums(document.getElementById('p2g1').value);
+  var g2=parseNums(document.getElementById('p2g2').value);
+  var w=document.getElementById('p2warn');
+  ['p2t','p2gl','p2p','p2d'].forEach(function(id){document.getElementById(id).textContent='—';});
+  document.getElementById('p2stepSec').style.display='none';
+  if(g1.length<3||g2.length<3){if(g1.length>0||g2.length>0){w.textContent='⚠ Mínimo 3 valores em cada grupo.';w.style.display='block';}else w.style.display='none';RC(ctxP2);ctxP2.clearRect(0,0,480,220);ctxP2.fillStyle='#0f0f0f';ctxP2.fillRect(0,0,480,220);return;}
+  w.style.display='none';
+  var n1=g1.length,n2=g2.length,m1=mean(g1),m2=mean(g2),s1=sd(g1,1),s2=sd(g2,1);
+  var se=Math.sqrt(s1*s1/n1+s2*s2/n2);
+  var t=(m1-m2)/se;
+  // graus de liberdade de Welch
+  var df=Math.pow(s1*s1/n1+s2*s2/n2,2)/(Math.pow(s1*s1/n1,2)/(n1-1)+Math.pow(s2*s2/n2,2)/(n2-1));
+  df=Math.floor(df);
+  var pval=2*(1-tCDF(Math.abs(t),df));
+  // Cohen's d
+  var sp=Math.sqrt(((n1-1)*s1*s1+(n2-1)*s2*s2)/(n1+n2-2));
+  var d=Math.abs(m1-m2)/sp;
+  document.getElementById('p2t').textContent=t.toFixed(3);
+  document.getElementById('p2gl').textContent=df;
+  document.getElementById('p2p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
+  document.getElementById('p2p').style.color=pValColor(pval);
+  document.getElementById('p2d').textContent=d.toFixed(3);
+  drawTCurve(ctxP2,480,220,t,df,'#f5e642');
+  document.getElementById('p2steps').innerHTML=
+    '<div>① G1: n='+n1+', x̄='+m1.toFixed(3)+', DP='+s1.toFixed(3)+'</div>'+
+    '<div>&nbsp;&nbsp;&nbsp;G2: n='+n2+', x̄='+m2.toFixed(3)+', DP='+s2.toFixed(3)+'</div>'+
+    '<div>② Diferença entre grupos: x̄₁−x̄₂ = <b style="color:var(--blue)">'+(m1-m2).toFixed(3)+'</b></div>'+
+    '<div>③ Variabilidade dentro: SE = √(s₁²/n₁+s₂²/n₂) = <b style="color:var(--mut)">'+se.toFixed(4)+'</b></div>'+
+    '<div>④ t = '+(m1-m2).toFixed(3)+'/'+se.toFixed(4)+' = <b style="color:var(--yel)">'+t.toFixed(4)+'</b> | gl='+df+'</div>'+
+    '<div>⑤ <b style="color:'+pValColor(pval)+'">'+pValLabel(pval)+'</b></div>'+
+    '<div>⑥ Cohen\'s d = <b style="color:var(--grn)">'+d.toFixed(3)+'</b> '+(d<0.2?'(trivial)':d<0.5?'(pequeno)':d<0.8?'(médio)':'(grande)')+'</div>'+
+    '<div>'+(pval<0.05?'✓ Rejeita H₀: médias significativamente diferentes.':'✗ Não rejeita H₀: sem evidência de diferença.')+'</div>';
+  document.getElementById('p2stepSec').style.display='block';
+}
+
+// ── TESTE-T PAREADO ──────────────────────────────────────
+var cvP3=document.getElementById('cvP3'),ctxP3=cvP3.getContext('2d');
+function p3Ex(str){document.getElementById('p3data').value=str;p3Calc();}
+function p3Redraw(){p3Calc();}
+function p3Calc(){
+  var raw=document.getElementById('p3data').value.trim();
+  var w=document.getElementById('p3warn');
+  ['p3n','p3d','p3t','p3p'].forEach(function(id){document.getElementById(id).textContent='—';});
+  document.getElementById('p3stepSec').style.display='none';
+  if(!raw){RC(ctxP3);ctxP3.clearRect(0,0,480,220);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,480,220);return;}
+  var pairs=raw.split('\n').filter(function(l){return l.trim()!=='';}).map(function(l){var p=l.trim().split(/[\s,;]+/).map(Number);return p.length>=2&&!isNaN(p[0])&&!isNaN(p[1])?{a:p[0],b:p[1]}:null;}).filter(Boolean);
+  if(pairs.length<3){w.textContent='⚠ Mínimo 3 pares.';w.style.display='block';RC(ctxP3);ctxP3.clearRect(0,0,480,220);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,480,220);return;}
+  w.style.display='none';
+  var diffs=pairs.map(function(p){return p.b-p.a;});
+  var n=diffs.length,dm=mean(diffs),ds=sd(diffs,1),se=ds/Math.sqrt(n),t=dm/se,df=n-1;
+  var pval=2*(1-tCDF(Math.abs(t),df));
+  document.getElementById('p3n').textContent=n;
+  document.getElementById('p3d').textContent=dm.toFixed(3);
+  document.getElementById('p3t').textContent=t.toFixed(3);
+  document.getElementById('p3p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
+  document.getElementById('p3p').style.color=pValColor(pval);
+  drawTCurve(ctxP3,480,220,t,df,'#f5e642');
+  document.getElementById('p3steps').innerHTML=
+    '<div>① Diferenças (depois−antes): '+diffs.map(function(d){return d.toFixed(1);}).join(', ')+'</div>'+
+    '<div>② d̄ = '+dm.toFixed(3)+' | DP_d = '+ds.toFixed(3)+'</div>'+
+    '<div>③ SE = '+ds.toFixed(3)+'/√'+n+' = <b style="color:var(--blue)">'+se.toFixed(4)+'</b></div>'+
+    '<div>④ t = '+dm.toFixed(3)+'/'+se.toFixed(4)+' = <b style="color:var(--yel)">'+t.toFixed(4)+'</b> | gl='+df+'</div>'+
+    '<div>⑤ <b style="color:'+pValColor(pval)+'">'+pValLabel(pval)+'</b></div>'+
+    '<div>'+(pval<0.05?'✓ Mudança significativa após tratamento/intervenção.':'✗ Sem evidência de mudança significativa.')+'</div>';
+  document.getElementById('p3stepSec').style.display='block';
+}
+
+// ── QUI-QUADRADO 2×2 ─────────────────────────────────────
+var cvQ1=document.getElementById('cvQ1'),ctxQ1=cvQ1.getContext('2d');
+function q1Ex(a,b,c,d){document.getElementById('q1a').value=a;document.getElementById('q1b').value=b;document.getElementById('q1c').value=c;document.getElementById('q1d').value=d;q1Calc();}
+function chiCDF(x,k){if(x<=0)return 0;return 1-gammaCDF(x/2,k/2);}
+function gammaCDF(x,a){if(x<=0)return 0;var sum=1,term=1;for(var i=1;i<200;i++){term*=x/(a+i);sum+=term;if(term<1e-12)break;}return Math.exp(-x+a*Math.log(x)-lgamma2(a))*sum/a;}
+function lgamma2(x){var c=[76.18009172947146,-86.50532032941677,24.01409824083091,-1.231739572450155,0.1208650973866179e-2,-0.5395239384953e-5];var y=x,tmp=x+5.5;tmp=(x+0.5)*Math.log(tmp)-tmp;var ser=1.000000000190015;for(var j=0;j<6;j++)ser+=c[j]/++y;return tmp+Math.log(2.5066282746310005*ser/x);}
+function q1Calc(){
+  var a=parseFloat(document.getElementById('q1a').value),b=parseFloat(document.getElementById('q1b').value);
+  var c=parseFloat(document.getElementById('q1c').value),d=parseFloat(document.getElementById('q1d').value);
+  ['q1chi','q1gl','q1p','q1v'].forEach(function(id){document.getElementById(id).textContent='—';});
+  document.getElementById('q1stepSec').style.display='none';
+  var w=document.getElementById('q1warn');
+  if(isNaN(a)||isNaN(b)||isNaN(c)||isNaN(d)||a<0||b<0||c<0||d<0){w.textContent='⚠ Preencha todos os campos com valores ≥ 0.';w.style.display='block';RC(ctxQ1);ctxQ1.clearRect(0,0,480,200);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,480,200);return;}
+  w.style.display='none';
+  var n=a+b+c+d;
+  if(n===0){return;}
+  var r1=a+b,r2=c+d,c1=a+c,c2=b+d;
+  var ea=r1*c1/n,eb=r1*c2/n,ec=r2*c1/n,ed=r2*c2/n;
+  var chi2=Math.pow(a-ea,2)/ea+Math.pow(b-eb,2)/eb+Math.pow(c-ec,2)/ec+Math.pow(d-ed,2)/ed;
+  var pval=1-chiCDF(chi2,1);
+  var v=Math.sqrt(chi2/n);
+  document.getElementById('q1chi').textContent=chi2.toFixed(3);
+  document.getElementById('q1gl').textContent='1';
+  document.getElementById('q1p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
+  document.getElementById('q1p').style.color=pValColor(pval);
+  document.getElementById('q1v').textContent=v.toFixed(3);
+  // desenho da tabela no canvas
+  RC(ctxQ1);ctxQ1.clearRect(0,0,480,200);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,480,200);
+  var cells=[['',  'Grupo A','Grupo B','Total'],['Desf.+',a,b,r1],['Desf.−',c,d,r2],['Total',c1,c2,n]];
+  var colors=[['#555','#7dd3fc','#a8ff78','#555'],['#c084fc',pval<0.05?'#a8ff78':'#fff',pval<0.05?'#a8ff78':'#fff','#555'],['#c084fc',pval<0.05?'#a8ff78':'#fff',pval<0.05?'#a8ff78':'#fff','#555'],['#555','#555','#555','#f5e642']];
+  var cw=480/4,ch=200/4;
+  cells.forEach(function(row,ri){row.forEach(function(cell,ci){RC(ctxQ1);ctxQ1.fillStyle=ri===0||ci===0?'#1a1a1a':'#141414';ctxQ1.fillRect(ci*cw+1,ri*ch+1,cw-2,ch-2);ctxQ1.fillStyle=colors[ri][ci];ctxQ1.font=(ri===0||ci===0?'bold ':'')+'11px IBM Plex Mono';ctxQ1.textAlign='center';ctxQ1.fillText(cell,ci*cw+cw/2,ri*ch+ch/2+4);});});
+  // resultado
+  RC(ctxQ1);ctxQ1.fillStyle=pValColor(pval);ctxQ1.font='bold 10px IBM Plex Mono';ctxQ1.textAlign='center';ctxQ1.fillText('χ²='+chi2.toFixed(3)+' | '+pValLabel(pval),240,190);
+  document.getElementById('q1steps').innerHTML=
+    '<div>① Observados: a='+a+' b='+b+' c='+c+' d='+d+' | n='+n+'</div>'+
+    '<div>② Esperados: Ea='+ea.toFixed(2)+' Eb='+eb.toFixed(2)+' Ec='+ec.toFixed(2)+' Ed='+ed.toFixed(2)+'</div>'+
+    '<div>③ χ² = ('+a+'−'+ea.toFixed(2)+')²/'+ea.toFixed(2)+' + ... = <b style="color:var(--yel)">'+chi2.toFixed(4)+'</b></div>'+
+    '<div>④ gl = (2−1)×(2−1) = <b>1</b></div>'+
+    '<div>⑤ <b style="color:'+pValColor(pval)+'">'+pValLabel(pval)+'</b></div>'+
+    '<div>⑥ V de Cramér = √(χ²/n) = <b style="color:var(--grn)">'+v.toFixed(3)+'</b> '+(v<0.1?'(fraco)':v<0.3?'(moderado)':'(forte)')+'</div>'+
+    (Math.min(ea,eb,ec,ed)<5?'<div style="color:var(--red)">⚠ Célula com esperado&lt;5 — considere teste exato de Fisher.</div>':'');
+  document.getElementById('q1stepSec').style.display='block';
+}
+
+// ── QUI-QUADRADO r×c ─────────────────────────────────────
+function q2Ex(str){document.getElementById('q2data').value=str;q2Calc();}
+function q2Calc(){
+  var raw=document.getElementById('q2data').value.trim();
+  var w=document.getElementById('q2warn');
+  ['q2chi','q2gl','q2p','q2v'].forEach(function(id){document.getElementById(id).textContent='—';});
+  document.getElementById('q2stepSec').style.display='none';
+  if(!raw){w.style.display='none';return;}
+  var rows=raw.split('\n').filter(function(l){return l.trim()!=='';});
+  var table=[],labels=[];
+  var ok=true;
+  rows.forEach(function(line){var parts=line.trim().split(/\s+/);var name=parts[0];var nums=parts.slice(1).map(Number);if(nums.some(isNaN)||nums.length<2){ok=false;return;}labels.push(name);table.push(nums);});
+  if(!ok||table.length<2){w.textContent='⚠ Formato inválido. Cada linha: nome val1 val2 val3 ...';w.style.display='block';return;}
+  var ncols=table[0].length;if(table.some(function(r){return r.length!==ncols;})){w.textContent='⚠ Todas as linhas devem ter o mesmo número de colunas.';w.style.display='block';return;}
+  w.style.display='none';
+  var nrows=table.length,n=0;
+  table.forEach(function(r){r.forEach(function(v){n+=v;});});
+  var rowSums=table.map(function(r){return r.reduce(function(s,v){return s+v;},0);});
+  var colSums=[];for(var j=0;j<ncols;j++){colSums.push(table.reduce(function(s,r){return s+r[j];},0));}
+  var chi2=0,minExp=Infinity;
+  table.forEach(function(r,i){r.forEach(function(obs,j){var exp=rowSums[i]*colSums[j]/n;if(exp<minExp)minExp=exp;chi2+=Math.pow(obs-exp,2)/exp;});});
+  var df=(nrows-1)*(ncols-1);
+  var pval=1-chiCDF(chi2,df);
+  var v=Math.sqrt(chi2/(n*Math.min(nrows-1,ncols-1)));
+  document.getElementById('q2chi').textContent=chi2.toFixed(3);
+  document.getElementById('q2gl').textContent=df;
+  document.getElementById('q2p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
+  document.getElementById('q2p').style.color=pValColor(pval);
+  document.getElementById('q2v').textContent=v.toFixed(3);
+  document.getElementById('q2steps').innerHTML=
+    '<div>① Tabela '+nrows+'×'+ncols+' | n='+n+' | gl='+df+'</div>'+
+    '<div>② χ² = <b style="color:var(--yel)">'+chi2.toFixed(4)+'</b></div>'+
+    '<div>③ <b style="color:'+pValColor(pval)+'">'+pValLabel(pval)+'</b></div>'+
+    '<div>④ V de Cramér = <b style="color:var(--grn)">'+v.toFixed(3)+'</b> '+(v<0.1?'(fraco)':v<0.3?'(moderado)':'(forte)')+'</div>'+
+    (minExp<5?'<div style="color:var(--red)">⚠ Célula com esperado&lt;5 (min='+minExp.toFixed(1)+') — teste pode ser impreciso.</div>':'');
+  document.getElementById('q2stepSec').style.display='block';
+}
+
+// ═══ TAMANHO DE AMOSTRA ══════════════════════════════════
+function nm1Calc(){
+  var s=parseFloat(document.getElementById('nm1sd').value)||10;
+  var e=parseFloat(document.getElementById('nm1e').value)||3;
+  var z=parseFloat(document.getElementById('nm1conf').value)||1.96;
+  var n=Math.ceil(Math.pow(z*s/e,2));
+  var conf=z===1.645?'90%':z===1.96?'95%':'99%';
+  document.getElementById('nm1n').textContent=n;
+  document.getElementById('nm1a').textContent=z===1.645?'0,10':z===1.96?'0,05':'0,01';
+  document.getElementById('nm1pow').textContent=conf;
+  document.getElementById('nm1steps').innerHTML=
+    '<div>① n = (z × σ / E)² = ('+z+' × '+s+' / '+e+')²</div>'+
+    '<div>② n = ('+( z*s/e).toFixed(3)+')² = '+Math.pow(z*s/e,2).toFixed(1)+'</div>'+
+    '<div>③ Arredondando: <b style="color:var(--yel)">n = '+n+'</b></div>'+
+    '<div style="color:var(--mut)">Com n='+n+', a margem de erro máxima será ±'+e+' com '+conf+' de confiança.</div>';
+  document.getElementById('nm1res').style.display='block';
+}
+
+function nm2Calc(){
+  var delta=parseFloat(document.getElementById('nm2delta').value)||5;
+  var s=parseFloat(document.getElementById('nm2sd').value)||8;
+  var zb=parseFloat(document.getElementById('nm2pow_sel').value)||1.282;
+  var za=parseFloat(document.getElementById('nm2alpha').value)||1.96;
+  var d=Math.abs(delta)/s;
+  var n=Math.ceil(2*s*s*Math.pow(za+zb,2)/(delta*delta));
+  var pow=zb===0.842?'80%':zb===1.036?'85%':'90%';
+  document.getElementById('nm2n').textContent=n+' por grupo';
+  document.getElementById('nm2d').textContent=d.toFixed(3);
+  document.getElementById('nm2pow').textContent=pow;
+  document.getElementById('nm2steps').innerHTML=
+    '<div>① Cohen\'s d = δ/σ = '+delta+'/'+s+' = <b style="color:var(--grn)">'+d.toFixed(3)+'</b> '+(d<0.2?'(trivial)':d<0.5?'(pequeno)':d<0.8?'(médio)':'(grande)')+'</div>'+
+    '<div>② n = 2σ²(z_α+z_β)²/δ² = 2×'+s+'²×('+za+'+'+zb+')²/'+delta+'²</div>'+
+    '<div>③ n = <b style="color:var(--yel)">'+n+' por grupo</b> (total = '+(2*n)+')</div>'+
+    '<div style="color:var(--mut)">Detectará uma diferença de '+delta+' unidades com poder '+pow+'.</div>';
+  document.getElementById('nm2res').style.display='block';
+}
+
+function nm3Calc(){
+  var p=parseFloat(document.getElementById('nm3p').value)||0.5;
+  var e=parseFloat(document.getElementById('nm3e').value)||0.05;
+  var z=parseFloat(document.getElementById('nm3conf').value)||1.96;
+  p=Math.max(0.01,Math.min(0.99,p));
+  var n=Math.ceil(z*z*p*(1-p)/(e*e));
+  var conf=z===1.645?'90%':z===1.96?'95%':'99%';
+  var ep=Math.sqrt(p*(1-p)/n);
+  document.getElementById('nm3n').textContent=n;
+  document.getElementById('nm3ep').textContent=ep.toFixed(4);
+  document.getElementById('nm3steps').innerHTML=
+    '<div>① n = z²×p(1−p)/E² = '+z+'²×'+p+'×'+(1-p).toFixed(2)+'/'+e+'²</div>'+
+    '<div>② n = '+( z*z*p*(1-p)).toFixed(3)+'/'+e*e+' = '+( z*z*p*(1-p)/(e*e)).toFixed(1)+'</div>'+
+    '<div>③ <b style="color:var(--yel)">n = '+n+'</b></div>'+
+    '<div style="color:var(--mut)">Para p='+p+', margem ±'+e+' com '+conf+' de confiança.</div>'+
+    (Math.abs(p-0.5)>0.1?'<div style="color:var(--mut)">Se usar p=0,5 (conservador): n='+Math.ceil(z*z*0.25/(e*e))+'</div>':'');
+  document.getElementById('nm3res').style.display='block';
+}
+
+function nm4Calc(){
+  var r=parseFloat(document.getElementById('nm4r_in').value)||0.5;
+  var za=parseFloat(document.getElementById('nm4alpha').value)||1.96;
+  var zb=parseFloat(document.getElementById('nm4pow_sel').value)||1.282;
+  r=Math.max(-0.999,Math.min(0.999,r));
+  var Zr=0.5*Math.log((1+r)/(1-r));
+  var n=Math.ceil(Math.pow((za+zb)/Zr,2)+3);
+  var pow=zb===0.842?'80%':zb===1.036?'85%':'90%';
+  document.getElementById('nm4n').textContent=n;
+  document.getElementById('nm4r').textContent=r.toFixed(2);
+  document.getElementById('nm4pow').textContent=pow;
+  document.getElementById('nm4steps').innerHTML=
+    '<div>① Transformação de Fisher: Zr = 0,5×ln((1+r)/(1−r)) = 0,5×ln((1+'+r+')/(1−'+r+')) = <b style="color:var(--blue)">'+Zr.toFixed(4)+'</b></div>'+
+    '<div>② n = ((z_α+z_β)/Zr)² + 3 = (('+za+'+'+zb+')/'+Zr.toFixed(4)+')² + 3</div>'+
+    '<div>③ <b style="color:var(--yel)">n = '+n+'</b></div>'+
+    '<div style="color:var(--mut)">Para detectar r='+r+' com poder '+pow+' e α='+(za===1.645?'0,10':za===1.96?'0,05':'0,01')+'.</div>';
+  document.getElementById('nm4res').style.display='block';
+}
+
+
+// ═══ INIT ════════════════════════════════════════════════
+drawNormal();
+rExample();
+bEmpty();
+hGen('normal');
+dpEmpty();
+nm1Calc();nm2Calc();nm3Calc();nm4Calc();
+</script>
+</body>
+</html>
