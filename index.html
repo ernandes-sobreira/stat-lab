@@ -6,20 +6,20 @@
 <title>StatLab</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=IBM+Plex+Mono:wght@400;600&display=swap');
-:root{--bg:#0d0d0d;--sur:#141414;--bor:#242424;--txt:#f0ede8;--mut:#555;--yel:#f5e642;--red:#ff4d6d;--cya:#00e5ff;--grn:#a8ff78;--blue:#7dd3fc;--pur:#c084fc;}
+:root{--bg:#0d0d0d;--sur:#141414;--bor:#2e2e2e;--txt:#f0ede8;--mut:#b0b0b0;--yel:#f5e642;--red:#ff4d6d;--cya:#00e5ff;--grn:#a8ff78;--blue:#7dd3fc;--pur:#c084fc;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--txt);max-width:480px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;}
 header{padding:12px 16px 0;border-bottom:1px solid var(--bor);}
 header h1{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--yel);letter-spacing:-0.02em;}
-header p{font-size:0.55rem;color:var(--mut);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
+header p{font-size:0.55rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
 .tabs{display:flex;border-bottom:2px solid var(--bor);overflow-x:auto;scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
-.tab{flex:0 0 auto;padding:10px 10px;background:transparent;border:none;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.55rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;white-space:nowrap;}
+.tab{flex:0 0 auto;padding:10px 10px;background:transparent;border:none;color:#999;font-family:'IBM Plex Mono',monospace;font-size:0.55rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.15s;white-space:nowrap;}
 .tab.on{color:var(--yel);border-bottom-color:var(--yel);font-weight:600;}
 .panel{display:none;flex-direction:column;}
 .panel.on{display:flex;}
 .subtabs{display:flex;border-bottom:1px solid var(--bor);}
-.stab{flex:1;padding:9px 4px;background:transparent;border:none;color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.52rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;transition:all 0.15s;}
+.stab{flex:1;padding:9px 4px;background:transparent;border:none;color:#999;font-family:'IBM Plex Mono',monospace;font-size:0.52rem;cursor:pointer;text-transform:uppercase;letter-spacing:0.05em;border-bottom:2px solid transparent;transition:all 0.15s;}
 .stab.on{color:var(--yel);border-bottom-color:var(--yel);font-weight:600;}
 .subpanel{display:none;flex-direction:column;}
 .subpanel.on{display:flex;}
@@ -28,22 +28,22 @@ canvas{display:block;width:100%;height:auto;}
 .sb{display:flex;border-bottom:1px solid var(--bor);}
 .st{flex:1;padding:8px 4px;text-align:center;border-right:1px solid var(--bor);}
 .st:last-child{border-right:none;}
-.st .l{display:block;font-size:0.46rem;color:var(--mut);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;}
+.st .l{display:block;font-size:0.46rem;color:#aaa;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:3px;}
 .st .v{font-size:0.78rem;font-weight:600;}
 .sec{padding:11px 14px;border-bottom:1px solid var(--bor);}
-.stit{font-size:0.52rem;color:var(--mut);text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;}
+.stit{font-size:0.52rem;color:#ccc;text-transform:uppercase;letter-spacing:0.14em;margin-bottom:8px;font-weight:600;}
 .pills{display:flex;gap:5px;flex-wrap:wrap;}
-.pill{padding:5px 11px;border-radius:40px;border:1.5px solid var(--bor);background:var(--sur);color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.62rem;cursor:pointer;transition:all 0.1s;white-space:nowrap;}
+.pill{padding:5px 11px;border-radius:40px;border:1.5px solid var(--bor);background:var(--sur);color:#bbb;font-family:'IBM Plex Mono',monospace;font-size:0.62rem;cursor:pointer;transition:all 0.1s;white-space:nowrap;}
 .pill:hover{border-color:#444;color:var(--txt);}
 .ay{background:var(--yel)!important;color:#000!important;border-color:var(--yel)!important;font-weight:600!important;}
 .ab{background:var(--blue)!important;color:#000!important;border-color:var(--blue)!important;font-weight:600!important;}
 .ag{background:var(--grn)!important;color:#000!important;border-color:var(--grn)!important;font-weight:600!important;}
 .ar{background:var(--red)!important;color:#000!important;border-color:var(--red)!important;font-weight:600!important;}
 .ibs{display:flex;gap:6px;margin-top:8px;}
-.ib{flex:1;padding:7px 4px;border:1.5px solid var(--bor);background:var(--sur);color:var(--mut);font-family:'IBM Plex Mono',monospace;font-size:0.6rem;border-radius:7px;cursor:pointer;transition:all 0.1s;text-align:center;}
-.ib:hover{border-color:#555;color:var(--txt);}
+.ib{flex:1;padding:7px 4px;border:1.5px solid var(--bor);background:var(--sur);color:#aaa;font-family:'IBM Plex Mono',monospace;font-size:0.6rem;border-radius:7px;cursor:pointer;transition:all 0.1s;text-align:center;}
+.ib:hover{border-color:#888;color:var(--txt);}
 .srow{display:flex;align-items:center;gap:8px;margin-top:6px;}
-.srow label{font-size:0.52rem;color:var(--mut);text-transform:uppercase;min-width:76px;}
+.srow label{font-size:0.52rem;color:#bbb;text-transform:uppercase;min-width:76px;}
 .srow input[type=range]{flex:1;accent-color:var(--yel);}
 .srow span{font-size:0.7rem;color:var(--txt);min-width:26px;text-align:right;}
 .binput{width:100%;padding:9px 12px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:8px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.72rem;outline:none;transition:border-color 0.15s;}
@@ -51,17 +51,17 @@ canvas{display:block;width:100%;height:auto;}
 .txta{width:100%;padding:9px 12px;background:#1a1a1a;border:1.5px solid var(--bor);border-radius:8px;color:var(--txt);font-family:'IBM Plex Mono',monospace;font-size:0.68rem;outline:none;resize:vertical;min-height:90px;line-height:1.7;}
 .warn{font-size:0.6rem;color:var(--red);margin-top:5px;display:none;}
 .chips{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px;min-height:20px;}
-.chip{padding:3px 8px;border-radius:5px;font-size:0.62rem;border:1px solid #2a2a2a;background:#1a1a1a;color:var(--mut);}
+.chip{padding:3px 8px;border-radius:5px;font-size:0.62rem;border:1px solid #333;background:#1a1a1a;color:#bbb;}
 .chip-lbl{font-size:0.42rem;display:block;text-align:center;margin-top:1px;}
 .leg{display:flex;flex-direction:column;gap:5px;}
-.lr{display:flex;align-items:center;gap:7px;font-size:0.6rem;color:var(--mut);}
+.lr{display:flex;align-items:center;gap:7px;font-size:0.6rem;color:#bbb;}
 .ld{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
 .ll{width:16px;height:2px;flex-shrink:0;}
-.hint{font-size:0.54rem;color:var(--mut);margin-top:6px;}
-.steps{font-size:0.63rem;line-height:2;color:var(--mut);}
+.hint{font-size:0.54rem;color:#999;margin-top:6px;}
+.steps{font-size:0.63rem;line-height:2;color:#ccc;}
 .steps b{color:var(--txt);}
-.desc{font-size:0.63rem;color:var(--mut);line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-top:8px;}
-.expblock{display:flex;flex-direction:column;gap:9px;font-size:0.62rem;line-height:1.6;}
+.desc{font-size:0.63rem;color:#c0c0c0;line-height:1.7;background:#1a1a1a;border-radius:8px;padding:10px;border:1px solid var(--bor);margin-top:8px;}
+.expblock{display:flex;flex-direction:column;gap:9px;font-size:0.62rem;line-height:1.6;color:#bbb;}
 .expitem{border-radius:0;padding-left:10px;}
 </style>
 </head>
@@ -151,9 +151,9 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">O que mede cada indicador</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Skewness</span><br><span style="color:var(--mut)">≈0 simétrica | &gt;0 cauda direita | &lt;0 cauda esquerda</span></div>
-        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Curtose</span><br><span style="color:var(--mut)">≈3 normal | &gt;3 pico alto | &lt;3 achatada</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Regra 68–95–99,7%</span><br><span style="color:var(--mut)">±1σ=68,3% | ±2σ=95,4% | ±3σ=99,7%</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Skewness</span><br><span style="color:#c0c0c0">≈0 simétrica | &gt;0 cauda direita | &lt;0 cauda esquerda</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Curtose</span><br><span style="color:#c0c0c0">≈3 normal | &gt;3 pico alto | &lt;3 achatada</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Regra 68–95–99,7%</span><br><span style="color:#c0c0c0">±1σ=68,3% | ±2σ=95,4% | ±3σ=99,7%</span></div>
       </div>
     </div>
   </div>
@@ -213,10 +213,10 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Como se calcula</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Equação: ŷ = a·x + b</span><br><span style="color:var(--mut)">a=inclinação, b=intercepto (Y quando X=0)</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Mínimos Quadrados</span><br><span style="color:var(--mut)">a = Σ[(xᵢ−x̄)(yᵢ−ȳ)] / Σ[(xᵢ−x̄)²]<br>b = ȳ − a·x̄</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">R² = 1 − SS_res/SS_tot</span><br><span style="color:var(--mut)">Quanto da variação de Y a reta explica.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">p-valor: testa se a≠0</span><br><span style="color:var(--mut)">p&lt;0,05 → relação significativa.<br>R² diz QUANTO é forte. p-valor diz se é REAL.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Equação: ŷ = a·x + b</span><br><span style="color:#c0c0c0">a=inclinação, b=intercepto (Y quando X=0)</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Mínimos Quadrados</span><br><span style="color:#c0c0c0">a = Σ[(xᵢ−x̄)(yᵢ−ȳ)] / Σ[(xᵢ−x̄)²]<br>b = ȳ − a·x̄</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">R² = 1 − SS_res/SS_tot</span><br><span style="color:#c0c0c0">Quanto da variação de Y a reta explica.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">p-valor: testa se a≠0</span><br><span style="color:#c0c0c0">p&lt;0,05 → relação significativa.<br>R² diz QUANTO é forte. p-valor diz se é REAL.</span></div>
       </div>
     </div>
     <div class="sec">
@@ -314,11 +314,11 @@ canvas{display:block;width:100%;height:auto;}
   <div class="sec">
     <div class="stit">Como calcular cada parte</div>
     <div class="expblock">
-      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Mediana</span><br><span style="color:var(--mut)">Ordene. N ímpar→valor do meio. N par→média dos dois centrais.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Q1 (25%)</span><br><span style="color:var(--mut)">Mediana da metade inferior.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Q3 (75%)</span><br><span style="color:var(--mut)">Mediana da metade superior.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">IQR = Q3−Q1</span><br><span style="color:var(--mut)">Largura da caixa. Bigodes: Q1−1,5×IQR e Q3+1,5×IQR.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">Outliers</span><br><span style="color:var(--mut)">Valores além dos bigodes.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Mediana</span><br><span style="color:#c0c0c0">Ordene. N ímpar→valor do meio. N par→média dos dois centrais.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Q1 (25%)</span><br><span style="color:#c0c0c0">Mediana da metade inferior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Q3 (75%)</span><br><span style="color:#c0c0c0">Mediana da metade superior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">IQR = Q3−Q1</span><br><span style="color:#c0c0c0">Largura da caixa. Bigodes: Q1−1,5×IQR e Q3+1,5×IQR.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">Outliers</span><br><span style="color:#c0c0c0">Valores além dos bigodes.</span></div>
       <div style="background:#1a1a1a;border-radius:7px;padding:9px;border:1px solid var(--bor);font-size:0.6rem;color:var(--mut)"><span style="color:var(--yel);font-weight:600">⚠ Mínimo 5 dados</span> — com menos, Q1/mediana/Q3 colapsam.</div>
     </div>
   </div>
@@ -466,10 +466,10 @@ canvas{display:block;width:100%;height:auto;}
   <div class="sec">
     <div class="stit">DP × EP × IC 95%</div>
     <div class="expblock">
-      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">DP = √[Σ(xᵢ−x̄)²/(n−1)]</span><br><span style="color:var(--mut)">Variabilidade dos dados. Não muda com n.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">EP = DP/√n</span><br><span style="color:var(--mut)">Precisão da média. Diminui com n maior.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">IC 95% = x̄ ± t*×EP</span><br><span style="color:var(--mut)">Onde a média real está com 95% de certeza. Mais usado em artigos.</span></div>
-      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Regra de ouro</span><br><span style="color:var(--mut)">Se IC 95% não se sobrepõem → diferença provável (p&lt;0,05).<br>Nunca compare grupos com DP — use EP ou IC.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--red)"><span style="color:var(--red);font-weight:600">DP = √[Σ(xᵢ−x̄)²/(n−1)]</span><br><span style="color:#c0c0c0">Variabilidade dos dados. Não muda com n.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">EP = DP/√n</span><br><span style="color:#c0c0c0">Precisão da média. Diminui com n maior.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">IC 95% = x̄ ± t*×EP</span><br><span style="color:#c0c0c0">Onde a média real está com 95% de certeza. Mais usado em artigos.</span></div>
+      <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Regra de ouro</span><br><span style="color:#c0c0c0">Se IC 95% não se sobrepõem → diferença provável (p&lt;0,05).<br>Nunca compare grupos com DP — use EP ou IC.</span></div>
     </div>
   </div>
   <div class="sec">
@@ -498,25 +498,25 @@ canvas{display:block;width:100%;height:auto;}
       <div class="expblock">
         <div class="expitem" style="border-left:3px solid var(--yel)">
           <span style="color:var(--yel);font-weight:600">Definição formal</span><br>
-          <span style="color:var(--mut)">O valor-p é a <b style="color:var(--txt)">probabilidade de observar um resultado tão extremo quanto o obtido</b>, assumindo que H₀ (hipótese nula) é verdadeira.<br><br>
+          <span style="color:#c0c0c0">O valor-p é a <b style="color:var(--txt)">probabilidade de observar um resultado tão extremo quanto o obtido</b>, assumindo que H₀ (hipótese nula) é verdadeira.<br><br>
           <b style="color:var(--txt)">NÃO é</b> a probabilidade de H₀ ser verdadeira.<br>
           <b style="color:var(--txt)">NÃO é</b> a probabilidade de ter cometido um erro.</span>
         </div>
         <div class="expitem" style="border-left:3px solid var(--blue)">
           <span style="color:var(--blue);font-weight:600">H₀ e H₁</span><br>
-          <span style="color:var(--mut)"><b style="color:var(--txt)">H₀ (nula):</b> não há efeito, diferença ou relação.<br>
+          <span style="color:#c0c0c0"><b style="color:var(--txt)">H₀ (nula):</b> não há efeito, diferença ou relação.<br>
           <b style="color:var(--txt)">H₁ (alternativa):</b> há efeito, diferença ou relação.<br>
           O teste calcula: "se H₀ fosse verdadeira, qual a chance de obter este resultado?"</span>
         </div>
         <div class="expitem" style="border-left:3px solid var(--red)">
           <span style="color:var(--red);font-weight:600">Como interpretar</span><br>
-          <span style="color:var(--mut)"><b style="color:var(--grn)">p &lt; 0,05</b> → resultado improvável sob H₀ → rejeita H₀ → resultado <b style="color:var(--grn)">estatisticamente significativo</b><br>
+          <span style="color:#c0c0c0"><b style="color:var(--grn)">p &lt; 0,05</b> → resultado improvável sob H₀ → rejeita H₀ → resultado <b style="color:var(--grn)">estatisticamente significativo</b><br>
           <b style="color:var(--red)">p ≥ 0,05</b> → resultado compatível com H₀ → não rejeita H₀<br><br>
           O limiar 0,05 (α) é convencional — não sagrado.</span>
         </div>
         <div class="expitem" style="border-left:3px solid var(--pur)">
           <span style="color:var(--pur);font-weight:600">Fórmula geral</span><br>
-          <span style="color:var(--mut)">O valor-p não tem uma fórmula única — depende do teste. O que é comum é:<br><br>
+          <span style="color:#c0c0c0">O valor-p não tem uma fórmula única — depende do teste. O que é comum é:<br><br>
           <b style="color:var(--txt)">1.</b> Calcular uma estatística de teste (t, F, χ²)<br>
           <b style="color:var(--txt)">2.</b> Comparar essa estatística com sua distribuição teórica<br>
           <b style="color:var(--txt)">3.</b> p = P(estatística ≥ valor observado | H₀ verdadeira)<br><br>
@@ -524,7 +524,7 @@ canvas{display:block;width:100%;height:auto;}
         </div>
         <div class="expitem" style="border-left:3px solid var(--grn)">
           <span style="color:var(--grn);font-weight:600">Erros comuns</span><br>
-          <span style="color:var(--mut)">❌ p&lt;0,05 não significa efeito grande — use tamanho de efeito (Cohen's d, η²)<br>
+          <span style="color:#c0c0c0">❌ p&lt;0,05 não significa efeito grande — use tamanho de efeito (Cohen's d, η²)<br>
           ❌ p&gt;0,05 não prova que H₀ é verdadeira — é ausência de evidência, não evidência de ausência<br>
           ❌ p&lt;0,001 não é "mais significativo" — é só mais improvável sob H₀<br>
           ❌ p depende do n — com n=10.000 qualquer diferença mínima será significativa</span>
@@ -568,9 +568,9 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Como funciona</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ = μ₀</span><br><span style="color:var(--mut)">Testa se a média da amostra é diferente de um valor de referência.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">t = (x̄ − μ₀) / (DP / √n)</b><br>Razão entre a diferença observada e o erro padrão.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Graus de liberdade</span><br><span style="color:var(--mut)">gl = n − 1. O p-valor vem da distribuição t com gl graus de liberdade.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ = μ₀</span><br><span style="color:#c0c0c0">Testa se a média da amostra é diferente de um valor de referência.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:#c0c0c0"><b style="color:var(--txt)">t = (x̄ − μ₀) / (DP / √n)</b><br>Razão entre a diferença observada e o erro padrão.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">Graus de liberdade</span><br><span style="color:#c0c0c0">gl = n − 1. O p-valor vem da distribuição t com gl graus de liberdade.</span></div>
       </div>
     </div>
   </div>
@@ -608,9 +608,9 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Como funciona</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ₁ = μ₂</span><br><span style="color:var(--mut)">Testa se as médias de dois grupos independentes são iguais.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t (Welch)</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">t = (x̄₁ − x̄₂) / √(s₁²/n₁ + s₂²/n₂)</b><br>Diferença entre grupos / variabilidade dentro dos grupos.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d — tamanho do efeito</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">d = |x̄₁ − x̄₂| / DP_pooled</b><br>d≈0,2 pequeno | d≈0,5 médio | d≈0,8 grande</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ₁ = μ₂</span><br><span style="color:#c0c0c0">Testa se as médias de dois grupos independentes são iguais.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t (Welch)</span><br><span style="color:#c0c0c0"><b style="color:var(--txt)">t = (x̄₁ − x̄₂) / √(s₁²/n₁ + s₂²/n₂)</b><br>Diferença entre grupos / variabilidade dentro dos grupos.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d — tamanho do efeito</span><br><span style="color:#c0c0c0"><b style="color:var(--txt)">d = |x̄₁ − x̄₂| / DP_pooled</b><br>d≈0,2 pequeno | d≈0,5 médio | d≈0,8 grande</span></div>
       </div>
     </div>
   </div>
@@ -647,9 +647,9 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Como funciona</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ_diff = 0</span><br><span style="color:var(--mut)">Testa se a diferença (depois−antes) é zero em média. Cada indivíduo é seu próprio controle.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">dᵢ = depois − antes</b><br><b style="color:var(--txt)">t = d̄ / (DP_d / √n)</b><br>Igual ao teste-t de 1 amostra aplicado às diferenças.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Vantagem</span><br><span style="color:var(--mut)">Mais poderoso que o teste de 2 amostras quando os dados são naturalmente pareados (mesmo indivíduo antes/depois, irmãos, amostras do mesmo local).</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: μ_diff = 0</span><br><span style="color:#c0c0c0">Testa se a diferença (depois−antes) é zero em média. Cada indivíduo é seu próprio controle.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Estatística t</span><br><span style="color:#c0c0c0"><b style="color:var(--txt)">dᵢ = depois − antes</b><br><b style="color:var(--txt)">t = d̄ / (DP_d / √n)</b><br>Igual ao teste-t de 1 amostra aplicado às diferenças.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Vantagem</span><br><span style="color:#c0c0c0">Mais poderoso que o teste de 2 amostras quando os dados são naturalmente pareados (mesmo indivíduo antes/depois, irmãos, amostras do mesmo local).</span></div>
       </div>
     </div>
   </div>
@@ -728,9 +728,9 @@ canvas{display:block;width:100%;height:auto;}
       <div class="stit">Como funciona o qui-quadrado</div>
       <div class="expblock">
         <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">H₀: sem associação entre variáveis</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">χ² = Σ (O − E)² / E</span><br><span style="color:var(--mut)">O = frequência observada | E = frequência esperada = (total linha × total coluna) / total geral</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">χ² = Σ (O − E)² / E</span><br><span style="color:#c0c0c0">O = frequência observada | E = frequência esperada = (total linha × total coluna) / total geral</span></div>
         <div class="expitem" style="border-left:3px solid var(--pur)"><span style="color:var(--pur);font-weight:600">gl = (linhas−1) × (colunas−1)</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">V de Cramér — tamanho do efeito</span><br><span style="color:var(--mut)"><b style="color:var(--txt)">V = √(χ²/(n × min(r−1,c−1)))</b><br>V≈0,1 fraco | V≈0,3 moderado | V≈0,5 forte</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">V de Cramér — tamanho do efeito</span><br><span style="color:#c0c0c0"><b style="color:var(--txt)">V = √(χ²/(n × min(r−1,c−1)))</b><br>V≈0,1 fraco | V≈0,3 moderado | V≈0,5 forte</span></div>
         <div style="background:#1a1a1a;border-radius:7px;padding:9px;border:1px solid var(--bor);font-size:0.6rem;color:var(--mut)"><span style="color:var(--yel);font-weight:600">⚠ Premissas</span> — frequência esperada ≥ 5 em pelo menos 80% das células. Se não, use o teste exato de Fisher.</div>
       </div>
     </div>
@@ -786,8 +786,8 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Fórmula: n = (z × σ / E)²</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--mut)">z=1,96 para 95% | Arredonde sempre para cima.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Como estimar σ sem dados?</span><br><span style="color:var(--mut)">Use a literatura, estudo piloto, ou σ ≈ amplitude_esperada/4.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:#c0c0c0">z=1,96 para 95% | Arredonde sempre para cima.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Como estimar σ sem dados?</span><br><span style="color:#c0c0c0">Use a literatura, estudo piloto, ou σ ≈ amplitude_esperada/4.</span></div>
       </div>
     </div>
   </div>
@@ -840,8 +840,8 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Fórmula: n = 2σ²(z_α+z_β)²/δ²</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--mut)">n é por grupo. Total do estudo = 2n.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d = δ/σ</span><br><span style="color:var(--mut)">Tamanho do efeito: &lt;0,2 trivial | 0,2–0,5 pequeno | 0,5–0,8 médio | &gt;0,8 grande</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:#c0c0c0">n é por grupo. Total do estudo = 2n.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Cohen's d = δ/σ</span><br><span style="color:#c0c0c0">Tamanho do efeito: &lt;0,2 trivial | 0,2–0,5 pequeno | 0,5–0,8 médio | &gt;0,8 grande</span></div>
       </div>
     </div>
   </div>
@@ -881,7 +881,7 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Fórmula: n = z² × p(1−p) / E²</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Por que p=0,5 é conservador?</span><br><span style="color:var(--mut)">p(1−p) é máximo em p=0,5. Qualquer outra proporção dá n menor ou igual.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--blue)"><span style="color:var(--blue);font-weight:600">Por que p=0,5 é conservador?</span><br><span style="color:#c0c0c0">p(1−p) é máximo em p=0,5. Qualquer outra proporção dá n menor ou igual.</span></div>
       </div>
     </div>
   </div>
@@ -924,8 +924,8 @@ canvas{display:block;width:100%;height:auto;}
     <div class="sec">
       <div class="stit">Fórmula: n = ((z_α+z_β)/Z_r)² + 3</div>
       <div class="expblock">
-        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Transformação de Fisher</span><br><span style="color:var(--mut)">Z_r = 0,5×ln((1+r)/(1−r)) — converte r para escala normal, estabilizando a variância.</span></div>
-        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Por que +3?</span><br><span style="color:var(--mut)">Correção de viés de Filon para amostras pequenas.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--yel)"><span style="color:var(--yel);font-weight:600">Transformação de Fisher</span><br><span style="color:#c0c0c0">Z_r = 0,5×ln((1+r)/(1−r)) — converte r para escala normal, estabilizando a variância.</span></div>
+        <div class="expitem" style="border-left:3px solid var(--grn)"><span style="color:var(--grn);font-weight:600">Por que +3?</span><br><span style="color:#c0c0c0">Correção de viés de Filon para amostras pequenas.</span></div>
       </div>
     </div>
   </div></div>
@@ -1027,7 +1027,7 @@ function drawNormal(){
   RC(ctxN);ctxN.strokeStyle='#1a1a1a';ctxN.lineWidth=1;
   for(var i=0;i<=5;i++){ctxN.beginPath();ctxN.moveTo(PN.l,cy(i*0.2));ctxN.lineTo(WN-PN.r,cy(i*0.2));ctxN.stroke();}
   RC(ctxN);ctxN.strokeStyle='#333';ctxN.lineWidth=1.5;ctxN.beginPath();ctxN.moveTo(PN.l,cy(0));ctxN.lineTo(WN-PN.r,cy(0));ctxN.stroke();
-  RC(ctxN);ctxN.fillStyle='#3a3a3a';ctxN.font='9px IBM Plex Mono';ctxN.textAlign='center';
+  RC(ctxN);ctxN.fillStyle='#888';ctxN.font='9px IBM Plex Mono';ctxN.textAlign='center';
   [-6,-4,-2,0,2,4,6].forEach(function(v){ctxN.fillText(v,cx(v),HN-PN.b+13);});
   RC(ctxN);ctxN.beginPath();
   for(var x=mu-sd;x<=mu+sd;x+=0.05){var y=pdf(x,mu,sd);if(x===mu-sd)ctxN.moveTo(cx(x),cy(y));else ctxN.lineTo(cx(x),cy(y));}
@@ -1122,7 +1122,7 @@ function rDraw(){
   RC(ctxR);ctxR.strokeStyle='#1a1a1a';ctxR.lineWidth=1;
   for(var i=0;i<=10;i++){ctxR.beginPath();ctxR.moveTo(rCX(i/10),PR.t);ctxR.lineTo(rCX(i/10),HR-PR.b);ctxR.stroke();ctxR.beginPath();ctxR.moveTo(PR.l,rCY(i/10));ctxR.lineTo(WR-PR.r,rCY(i/10));ctxR.stroke();}
   RC(ctxR);ctxR.strokeStyle='#333';ctxR.lineWidth=1.5;ctxR.beginPath();ctxR.moveTo(PR.l,rCY(0));ctxR.lineTo(WR-PR.r,rCY(0));ctxR.stroke();ctxR.beginPath();ctxR.moveTo(rCX(0),PR.t);ctxR.lineTo(rCX(0),HR-PR.b);ctxR.stroke();
-  RC(ctxR);ctxR.fillStyle='#3a3a3a';ctxR.font='9px IBM Plex Mono';ctxR.textAlign='center';
+  RC(ctxR);ctxR.fillStyle='#888';ctxR.font='9px IBM Plex Mono';ctxR.textAlign='center';
   [0,.2,.4,.6,.8,1].forEach(function(v){ctxR.fillText(v.toFixed(1),rCX(v),HR-PR.b+13);});
   ctxR.textAlign='right';[0,.2,.4,.6,.8,1].forEach(function(v){ctxR.fillText(v.toFixed(1),PR.l-4,rCY(v)+3);});
   var lr=rForced!==null?rForced:rLR(rPts);
@@ -1262,7 +1262,7 @@ function rdCalcDraw(){
   RC(ctxRD);ctxRD.strokeStyle='#1a1a1a';ctxRD.lineWidth=1;
   for(var i=0;i<=5;i++){ctxRD.beginPath();ctxRD.moveTo(PRD.l,PRD.t+i*(HRD-PRD.t-PRD.b)/5);ctxRD.lineTo(WRD-PRD.r,PRD.t+i*(HRD-PRD.t-PRD.b)/5);ctxRD.stroke();ctxRD.beginPath();ctxRD.moveTo(PRD.l+i*(WRD-PRD.l-PRD.r)/5,PRD.t);ctxRD.lineTo(PRD.l+i*(WRD-PRD.l-PRD.r)/5,HRD-PRD.b);ctxRD.stroke();}
   RC(ctxRD);ctxRD.strokeStyle='#333';ctxRD.lineWidth=1.5;ctxRD.beginPath();ctxRD.moveTo(PRD.l,HRD-PRD.b);ctxRD.lineTo(WRD-PRD.r,HRD-PRD.b);ctxRD.stroke();ctxRD.beginPath();ctxRD.moveTo(PRD.l,PRD.t);ctxRD.lineTo(PRD.l,HRD-PRD.b);ctxRD.stroke();
-  RC(ctxRD);ctxRD.fillStyle='#3a3a3a';ctxRD.font='9px IBM Plex Mono';ctxRD.textAlign='center';
+  RC(ctxRD);ctxRD.fillStyle='#888';ctxRD.font='9px IBM Plex Mono';ctxRD.textAlign='center';
   for(var i=0;i<=5;i++){var xv=x0+i*(x1-x0)/5;ctxRD.fillText(xv.toFixed(1),cx(xv),HRD-PRD.b+13);ctxRD.textAlign='right';ctxRD.fillText((y0+i*(y1-y0)/5).toFixed(1),PRD.l-4,cy(y0+i*(y1-y0)/5)+3);ctxRD.textAlign='center';}
   RC(ctxRD);ctxRD.strokeStyle='rgba(168,255,120,0.4)';ctxRD.lineWidth=1.5;ctxRD.setLineDash([3,3]);
   p.forEach(function(q){var yh=m*q.x+b;ctxRD.beginPath();ctxRD.moveTo(cx(q.x),cy(q.y));ctxRD.lineTo(cx(q.x),cy(yh));ctxRD.stroke();});RC(ctxRD);
@@ -1367,7 +1367,7 @@ function drawHist(){
   RC(ctxH);ctxH.strokeStyle='#1a1a1a';ctxH.lineWidth=1;for(var i=0;i<=5;i++){var yg=HH-PH.b-(i/5)*(HH-PH.t-PH.b);ctxH.beginPath();ctxH.moveTo(PH.l,yg);ctxH.lineTo(WH-PH.r,yg);ctxH.stroke();}
   counts.forEach(function(c,i){RC(ctxH);var x=PH.l+i*bw,y=cy(c),bh=HH-PH.b-y;ctxH.fillStyle=i===hDragBar?'rgba(245,230,66,0.6)':'rgba(125,211,252,0.5)';ctxH.fillRect(x+1,y,bw-2,bh);ctxH.strokeStyle=i===hDragBar?'#f5e642':'#7dd3fc';ctxH.lineWidth=1.5;ctxH.strokeRect(x+1,y,bw-2,bh);});
   RC(ctxH);ctxH.strokeStyle='#333';ctxH.lineWidth=1.5;ctxH.beginPath();ctxH.moveTo(PH.l,HH-PH.b);ctxH.lineTo(WH-PH.r,HH-PH.b);ctxH.stroke();
-  RC(ctxH);ctxH.fillStyle='#3a3a3a';ctxH.font='9px IBM Plex Mono';ctxH.textAlign='center';
+  RC(ctxH);ctxH.fillStyle='#888';ctxH.font='9px IBM Plex Mono';ctxH.textAlign='center';
   if(!hManual){for(var i=0;i<=bins;i+=Math.max(1,Math.ceil(bins/6))){ctxH.fillText((xMin+i*xStep).toFixed(0),PH.l+i*bw,HH-PH.b+13);}}
   if(hRaw.length&&!hManual){
     var mn=hRaw.reduce(function(a,b2){return a+b2;},0)/hRaw.length;
@@ -1429,7 +1429,7 @@ function hdCalcDraw(){
   ctxH2.fillStyle='#f5e642';ctxH2.font='bold 9px IBM Plex Mono';ctxH2.textAlign='center';ctxH2.fillText('x̄='+mean.toFixed(1),cx(mean),PH.t+10);
   RC(ctxH2);ctxH2.strokeStyle='#ff4d6d';ctxH2.lineWidth=1.5;ctxH2.setLineDash([5,4]);[mean-sd,mean+sd].forEach(function(v){if(v>=xMin&&v<=xMax){ctxH2.beginPath();ctxH2.moveTo(cx(v),PH.t);ctxH2.lineTo(cx(v),HH-PH.b);ctxH2.stroke();}});RC(ctxH2);
   RC(ctxH2);ctxH2.strokeStyle='#333';ctxH2.lineWidth=1.5;ctxH2.beginPath();ctxH2.moveTo(PH.l,HH-PH.b);ctxH2.lineTo(WH-PH.r,HH-PH.b);ctxH2.stroke();
-  RC(ctxH2);ctxH2.fillStyle='#3a3a3a';ctxH2.font='9px IBM Plex Mono';ctxH2.textAlign='center';
+  RC(ctxH2);ctxH2.fillStyle='#888';ctxH2.font='9px IBM Plex Mono';ctxH2.textAlign='center';
   for(var i=0;i<=bins;i+=Math.max(1,Math.ceil(bins/6))){ctxH2.fillText((xMin+i*bw).toFixed(1),cx(xMin+i*bw),HH-PH.b+13);}
   var sk=d.reduce(function(a,b2){return a+Math.pow((b2-mean)/sd,3);},0)/n;
   var ku=d.reduce(function(a,b2){return a+Math.pow((b2-mean)/sd,4);},0)/n;
@@ -1507,7 +1507,7 @@ function dpDraw(){
   RC(ctxDP);ctxDP.clearRect(0,0,WDP,HDP);ctxDP.fillStyle='#0f0f0f';ctxDP.fillRect(0,0,WDP,HDP);
   RC(ctxDP);ctxDP.fillStyle=errColor;ctxDP.font='bold 9px IBM Plex Mono';ctxDP.textAlign='left';ctxDP.fillText('Barra de erro: '+dpModeInfo[dpMode].label,PDP.l,PDP.t-6);
   RC(ctxDP);ctxDP.strokeStyle='#1a1a1a';ctxDP.lineWidth=1;
-  for(var i=0;i<=5;i++){var yg=HDP-PDP.b-(i/5)*(HDP-PDP.t-PDP.b);ctxDP.beginPath();ctxDP.moveTo(PDP.l,yg);ctxDP.lineTo(WDP-PDP.r,yg);ctxDP.stroke();RC(ctxDP);ctxDP.fillStyle='#3a3a3a';ctxDP.font='9px IBM Plex Mono';ctxDP.textAlign='right';ctxDP.fillText((maxVal*i/5).toFixed(1),PDP.l-5,yg+3);}
+  for(var i=0;i<=5;i++){var yg=HDP-PDP.b-(i/5)*(HDP-PDP.t-PDP.b);ctxDP.beginPath();ctxDP.moveTo(PDP.l,yg);ctxDP.lineTo(WDP-PDP.r,yg);ctxDP.stroke();RC(ctxDP);ctxDP.fillStyle='#888';ctxDP.font='9px IBM Plex Mono';ctxDP.textAlign='right';ctxDP.fillText((maxVal*i/5).toFixed(1),PDP.l-5,yg+3);}
   RC(ctxDP);ctxDP.strokeStyle='#333';ctxDP.lineWidth=1.5;ctxDP.beginPath();ctxDP.moveTo(PDP.l,HDP-PDP.b);ctxDP.lineTo(WDP-PDP.r,HDP-PDP.b);ctxDP.stroke();
   G.forEach(function(g,i){
     var color=colors[i%colors.length],err=getErr(g);
@@ -1520,7 +1520,7 @@ function dpDraw(){
     if(g.mean-err>0){ctxDP.beginPath();ctxDP.moveTo(cx2-capW,yErrBot);ctxDP.lineTo(cx2+capW,yErrBot);ctxDP.stroke();}
     RC(ctxDP);var maxChars=Math.max(4,Math.floor(w/6.5));
     ctxDP.fillStyle=color;ctxDP.font='bold 10px IBM Plex Mono';ctxDP.textAlign='center';ctxDP.fillText(g.name.length>maxChars?g.name.slice(0,maxChars-1)+'…':g.name,cx2,HDP-PDP.b+16);
-    ctxDP.fillStyle='#555';ctxDP.font='8px IBM Plex Mono';ctxDP.fillText('n='+g.n,cx2,HDP-PDP.b+27);
+    ctxDP.fillStyle='#888';ctxDP.font='8px IBM Plex Mono';ctxDP.fillText('n='+g.n,cx2,HDP-PDP.b+27);
     ctxDP.fillStyle=color;ctxDP.font='bold 9px IBM Plex Mono';ctxDP.fillText(g.mean.toFixed(1),cx2,yTop-10);
     ctxDP.fillStyle=errColor;ctxDP.font='8px IBM Plex Mono';ctxDP.fillText('±'+err.toFixed(2),cx2,yErrTop-5);
   });
@@ -1585,7 +1585,7 @@ function drawTCurve(ctx,W,H,tVal,df,color){
   ctx.beginPath();ctx.moveTo(cx(tv),cy(0));ctx.lineTo(cx(tv),cy(tpdf(tv)));ctx.stroke();RC(ctx);
 
   // ── Labels ──
-  RC(ctx);ctx.fillStyle='#3a3a3a';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
+  RC(ctx);ctx.fillStyle='#888';ctx.font='9px IBM Plex Mono';ctx.textAlign='center';
   [-4,-3,-2,-1,0,1,2,3,4].forEach(function(v){ctx.fillText(v,cx(v),H-P.b+13);});
 
   // label t observado
@@ -1598,7 +1598,7 @@ function drawTCurve(ctx,W,H,tVal,df,color){
   ctx.fillText('±'+tcrit.toFixed(2),cx(tcrit),cy(0)+14);
 
   // label gl e região
-  RC(ctx);ctx.fillStyle='#555';ctx.font='8px IBM Plex Mono';ctx.textAlign='right';
+  RC(ctx);ctx.fillStyle='#888';ctx.font='8px IBM Plex Mono';ctx.textAlign='right';
   ctx.fillText('gl='+df,W-P.r-4,P.t+10);
   RC(ctx);ctx.fillStyle='rgba(255,77,109,0.7)';ctx.font='8px IBM Plex Mono';ctx.textAlign='left';
   ctx.fillText('rejeição (α=0,05)',cx(xMin)+2,P.t+10);
