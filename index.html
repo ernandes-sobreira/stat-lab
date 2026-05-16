@@ -9,6 +9,20 @@
 :root{--bg:#0d0d0d;--sur:#141414;--bor:#2e2e2e;--txt:#f0ede8;--mut:#b0b0b0;--yel:#f5e642;--red:#ff4d6d;--cya:#00e5ff;--grn:#a8ff78;--blue:#7dd3fc;--pur:#c084fc;}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--txt);max-width:480px;margin:0 auto;display:flex;flex-direction:column;min-height:100vh;}
+@media(min-width:900px){
+  body{max-width:1100px;}
+  .panel.on{flex-direction:row;flex-wrap:wrap;align-items:flex-start;}
+  .panel>.subtabs{width:100%;border-bottom:2px solid var(--bor);}
+  .panel>.subpanel{display:none;flex-direction:row;flex-wrap:nowrap;width:100%;}
+  .panel>.subpanel.on{display:flex;}
+  .subpanel>.cw{width:56%;min-width:420px;flex-shrink:0;position:sticky;top:0;}
+  .subpanel>.cw canvas{width:100%;height:auto;}
+  .subpanel-controls{flex:1;overflow-y:auto;max-height:90vh;border-left:1px solid var(--bor);}
+  .sb{border-bottom:1px solid var(--bor);}
+  .sec{padding:13px 16px;}
+  .tabs .tab{font-size:0.65rem;padding:11px 14px;}
+  .stab{font-size:0.62rem;padding:10px 8px;}
+}
 header{padding:12px 16px 0;border-bottom:1px solid var(--bor);}
 header h1{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;color:var(--yel);letter-spacing:-0.02em;}
 header p{font-size:0.55rem;color:#aaa;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;}
@@ -1616,7 +1630,7 @@ function p1Calc(){
   var w=document.getElementById('p1warn');
   ['p1n','p1mean','p1t','p1p'].forEach(function(id){document.getElementById(id).textContent='—';});
   document.getElementById('p1stepSec').style.display='none';
-  if(nums.length<3){if(nums.length>0){w.textContent='⚠ Mínimo 3 valores.';w.style.display='block';}else w.style.display='none';RC(ctxP1);ctxP1.clearRect(0,0,480,220);ctxP1.fillStyle='#0f0f0f';ctxP1.fillRect(0,0,480,220);return;}
+  if(nums.length<3){if(nums.length>0){w.textContent='⚠ Mínimo 3 valores.';w.style.display='block';}else w.style.display='none';RC(ctxP1);ctxP1.clearRect(0,0,cvP1.width,cvP1.height);ctxP1.fillStyle='#0f0f0f';ctxP1.fillRect(0,0,cvP1.width,cvP1.height);return;}
   w.style.display='none';
   var n=nums.length,xm=mean(nums),s=sd(nums,1),se=s/Math.sqrt(n),t=(xm-mu0)/se,df=n-1;
   var pval=2*(1-tCDF(Math.abs(t),df));
@@ -1625,7 +1639,7 @@ function p1Calc(){
   document.getElementById('p1t').textContent=t.toFixed(3);
   document.getElementById('p1p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
   document.getElementById('p1p').style.color=pValColor(pval);
-  drawTCurve(ctxP1,480,220,t,df,'#f5e642');
+  drawTCurve(ctxP1,cvP1.width,cvP1.height,t,df,'#f5e642');
   var ci95=2.0*se;
   document.getElementById('p1steps').innerHTML=
     '<div>① n='+n+' | x̄='+xm.toFixed(3)+' | DP='+s.toFixed(3)+'</div>'+
@@ -1648,7 +1662,7 @@ function p2Calc(){
   var w=document.getElementById('p2warn');
   ['p2t','p2gl','p2p','p2d'].forEach(function(id){document.getElementById(id).textContent='—';});
   document.getElementById('p2stepSec').style.display='none';
-  if(g1.length<3||g2.length<3){if(g1.length>0||g2.length>0){w.textContent='⚠ Mínimo 3 valores em cada grupo.';w.style.display='block';}else w.style.display='none';RC(ctxP2);ctxP2.clearRect(0,0,480,220);ctxP2.fillStyle='#0f0f0f';ctxP2.fillRect(0,0,480,220);return;}
+  if(g1.length<3||g2.length<3){if(g1.length>0||g2.length>0){w.textContent='⚠ Mínimo 3 valores em cada grupo.';w.style.display='block';}else w.style.display='none';RC(ctxP2);ctxP2.clearRect(0,0,cvP2.width,cvP2.height);ctxP2.fillStyle='#0f0f0f';ctxP2.fillRect(0,0,cvP2.width,cvP2.height);return;}
   w.style.display='none';
   var n1=g1.length,n2=g2.length,m1=mean(g1),m2=mean(g2),s1=sd(g1,1),s2=sd(g2,1);
   var se=Math.sqrt(s1*s1/n1+s2*s2/n2);
@@ -1665,7 +1679,7 @@ function p2Calc(){
   document.getElementById('p2p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
   document.getElementById('p2p').style.color=pValColor(pval);
   document.getElementById('p2d').textContent=d.toFixed(3);
-  drawTCurve(ctxP2,480,220,t,df,'#f5e642');
+  drawTCurve(ctxP2,cvP2.width,cvP2.height,t,df,'#f5e642');
   document.getElementById('p2steps').innerHTML=
     '<div>① G1: n='+n1+', x̄='+m1.toFixed(3)+', DP='+s1.toFixed(3)+'</div>'+
     '<div>&nbsp;&nbsp;&nbsp;G2: n='+n2+', x̄='+m2.toFixed(3)+', DP='+s2.toFixed(3)+'</div>'+
@@ -1687,9 +1701,9 @@ function p3Calc(){
   var w=document.getElementById('p3warn');
   ['p3n','p3d','p3t','p3p'].forEach(function(id){document.getElementById(id).textContent='—';});
   document.getElementById('p3stepSec').style.display='none';
-  if(!raw){RC(ctxP3);ctxP3.clearRect(0,0,480,220);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,480,220);return;}
+  if(!raw){RC(ctxP3);ctxP3.clearRect(0,0,cvP3.width,cvP3.height);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,cvP3.width,cvP3.height);return;}
   var pairs=raw.split('\n').filter(function(l){return l.trim()!=='';}).map(function(l){var p=l.trim().split(/[\s,;]+/).map(Number);return p.length>=2&&!isNaN(p[0])&&!isNaN(p[1])?{a:p[0],b:p[1]}:null;}).filter(Boolean);
-  if(pairs.length<3){w.textContent='⚠ Mínimo 3 pares.';w.style.display='block';RC(ctxP3);ctxP3.clearRect(0,0,480,220);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,480,220);return;}
+  if(pairs.length<3){w.textContent='⚠ Mínimo 3 pares.';w.style.display='block';RC(ctxP3);ctxP3.clearRect(0,0,cvP3.width,cvP3.height);ctxP3.fillStyle='#0f0f0f';ctxP3.fillRect(0,0,cvP3.width,cvP3.height);return;}
   w.style.display='none';
   var diffs=pairs.map(function(p){return p.b-p.a;});
   var n=diffs.length,dm=mean(diffs),ds=sd(diffs,1),se=ds/Math.sqrt(n),t=dm/se,df=n-1;
@@ -1699,7 +1713,7 @@ function p3Calc(){
   document.getElementById('p3t').textContent=t.toFixed(3);
   document.getElementById('p3p').textContent=pval<0.001?'<0,001':pval.toFixed(4);
   document.getElementById('p3p').style.color=pValColor(pval);
-  drawTCurve(ctxP3,480,220,t,df,'#f5e642');
+  drawTCurve(ctxP3,cvP3.width,cvP3.height,t,df,'#f5e642');
   document.getElementById('p3steps').innerHTML=
     '<div>① Diferenças (depois−antes): '+diffs.map(function(d){return d.toFixed(1);}).join(', ')+'</div>'+
     '<div>② d̄ = '+dm.toFixed(3)+' | DP_d = '+ds.toFixed(3)+'</div>'+
@@ -1722,7 +1736,7 @@ function q1Calc(){
   ['q1chi','q1gl','q1p','q1v'].forEach(function(id){document.getElementById(id).textContent='—';});
   document.getElementById('q1stepSec').style.display='none';
   var w=document.getElementById('q1warn');
-  if(isNaN(a)||isNaN(b)||isNaN(c)||isNaN(d)||a<0||b<0||c<0||d<0){w.textContent='⚠ Preencha todos os campos com valores ≥ 0.';w.style.display='block';RC(ctxQ1);ctxQ1.clearRect(0,0,480,200);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,480,200);return;}
+  if(isNaN(a)||isNaN(b)||isNaN(c)||isNaN(d)||a<0||b<0||c<0||d<0){w.textContent='⚠ Preencha todos os campos com valores ≥ 0.';w.style.display='block';RC(ctxQ1);ctxQ1.clearRect(0,0,cvQ1.width,cvQ1.height);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,cvQ1.width,cvQ1.height);return;}
   w.style.display='none';
   var n=a+b+c+d;
   if(n===0){return;}
@@ -1737,13 +1751,13 @@ function q1Calc(){
   document.getElementById('q1p').style.color=pValColor(pval);
   document.getElementById('q1v').textContent=v.toFixed(3);
   // desenho da tabela no canvas
-  RC(ctxQ1);ctxQ1.clearRect(0,0,480,200);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,480,200);
+  RC(ctxQ1);ctxQ1.clearRect(0,0,cvQ1.width,cvQ1.height);ctxQ1.fillStyle='#0f0f0f';ctxQ1.fillRect(0,0,cvQ1.width,cvQ1.height);
   var cells=[['',  'Grupo A','Grupo B','Total'],['Desf.+',a,b,r1],['Desf.−',c,d,r2],['Total',c1,c2,n]];
   var colors=[['#555','#7dd3fc','#a8ff78','#555'],['#c084fc',pval<0.05?'#a8ff78':'#fff',pval<0.05?'#a8ff78':'#fff','#555'],['#c084fc',pval<0.05?'#a8ff78':'#fff',pval<0.05?'#a8ff78':'#fff','#555'],['#555','#555','#555','#f5e642']];
-  var cw=480/4,ch=200/4;
+  var qW=cvQ1.width,qH=cvQ1.height,cw=qW/4,ch=qH/4;
   cells.forEach(function(row,ri){row.forEach(function(cell,ci){RC(ctxQ1);ctxQ1.fillStyle=ri===0||ci===0?'#1a1a1a':'#141414';ctxQ1.fillRect(ci*cw+1,ri*ch+1,cw-2,ch-2);ctxQ1.fillStyle=colors[ri][ci];ctxQ1.font=(ri===0||ci===0?'bold ':'')+'11px IBM Plex Mono';ctxQ1.textAlign='center';ctxQ1.fillText(cell,ci*cw+cw/2,ri*ch+ch/2+4);});});
   // resultado
-  RC(ctxQ1);ctxQ1.fillStyle=pValColor(pval);ctxQ1.font='bold 10px IBM Plex Mono';ctxQ1.textAlign='center';ctxQ1.fillText('χ²='+chi2.toFixed(3)+' | '+pValLabel(pval),240,190);
+  RC(ctxQ1);ctxQ1.fillStyle=pValColor(pval);ctxQ1.font='bold 10px IBM Plex Mono';ctxQ1.textAlign='center';ctxQ1.fillText('χ²='+chi2.toFixed(3)+' | '+pValLabel(pval),qW/2,qH-10);
   document.getElementById('q1steps').innerHTML=
     '<div>① Observados: a='+a+' b='+b+' c='+c+' d='+d+' | n='+n+'</div>'+
     '<div>② Esperados: Ea='+ea.toFixed(2)+' Eb='+eb.toFixed(2)+' Ec='+ec.toFixed(2)+' Ed='+ed.toFixed(2)+'</div>'+
@@ -1868,6 +1882,73 @@ function nm4Calc(){
   document.getElementById('nm4res').style.display='block';
 }
 
+
+// ═══ RESPONSIVE LAYOUT ═══════════════════════════════════
+(function(){
+  document.querySelectorAll('.subpanel').forEach(function(sp){
+    var cw=sp.querySelector('.cw');
+    if(!cw)return;
+    var ctrl=document.createElement('div');
+    ctrl.className='subpanel-controls';
+    var children=Array.from(sp.children);
+    var after=false;
+    children.forEach(function(el){
+      if(after)ctrl.appendChild(el);
+      if(el===cw)after=true;
+    });
+    sp.appendChild(ctrl);
+  });
+
+  function syncVars(){
+    var defs=[
+      ['cvN','cvN2','WN','HN'],['cvR','','WR','HR'],['cvRD','','WRD','HRD'],
+      ['cvB','','WB','HB'],['cvH','cvH2','WH','HH'],['cvDP','','WDP','HDP']
+    ];
+    var cv;
+    cv=document.getElementById('cvN');if(cv&&cv.width>10){WN=cv.width;HN=cv.height;}
+    cv=document.getElementById('cvR');if(cv&&cv.width>10){WR=cv.width;HR=cv.height;}
+    cv=document.getElementById('cvRD');if(cv&&cv.width>10){WRD=cv.width;HRD=cv.height;}
+    cv=document.getElementById('cvB');if(cv&&cv.width>10){WB=cv.width;HB=cv.height;}
+    cv=document.getElementById('cvH');if(cv&&cv.width>10){WH=cv.width;HH=cv.height;}
+    cv=document.getElementById('cvDP');if(cv&&cv.width>10){WDP=cv.width;HDP=cv.height;}
+  }
+
+  function resizeAll(){
+    var canvasDefs=[
+      {id:'cvN',h:260},{id:'cvN2',h:260},{id:'cvR',h:300},{id:'cvRD',h:300},
+      {id:'cvB',h:260},{id:'cvH',h:260},{id:'cvH2',h:260},{id:'cvDP',h:300},
+      {id:'cvP1',h:220},{id:'cvP2',h:220},{id:'cvP3',h:220},{id:'cvQ1',h:200}
+    ];
+    canvasDefs.forEach(function(d){
+      var cv=document.getElementById(d.id);
+      if(!cv)return;
+      var newW=cv.parentElement.clientWidth;
+      if(newW>10){cv.width=newW;cv.height=Math.round(newW*(d.h/480));}
+    });
+    syncVars();
+  }
+
+  function redrawAll(){
+    resizeAll();
+    try{drawNormal();}catch(e){}
+    try{var cv=document.getElementById('cvR');if(cv&&cv.width>10)drawReg();}catch(e){}
+    try{var cv=document.getElementById('cvB');if(cv&&cv.width>10){var i=document.getElementById('bInput');if(i&&i.value.trim())bCalc();else bEmpty();}}catch(e){}
+    try{drawHist();}catch(e){}
+    try{var cv=document.getElementById('cvDP');if(cv&&cv.width>10){var i=document.getElementById('dpInput');if(i&&i.value.trim())dpCalc();else dpEmpty();}}catch(e){}
+    try{p1Calc();}catch(e){}
+    try{p2Calc();}catch(e){}
+    try{p3Calc();}catch(e){}
+    try{q1Calc();}catch(e){}
+  }
+
+  window.addEventListener('resize',function(){
+    clearTimeout(window._rt);
+    window._rt=setTimeout(redrawAll,80);
+  });
+
+  // Initial sizing after DOM paint
+  requestAnimationFrame(function(){setTimeout(resizeAll,0);});
+})();
 
 // ═══ INIT ════════════════════════════════════════════════
 drawNormal();
